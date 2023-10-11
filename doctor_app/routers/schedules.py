@@ -1,16 +1,11 @@
-from fastapi import FastAPI
-import mysql.connector
-from mysql.connector import Error                   #Terminado
-from main import connection, disconnection
+from mysql.connector import Error
+from .connection import connection,disconnection,cursor,connect
+from fastapi import APIRouter
 
-app = FastAPI()
-
-
-connect = mysql.connector.connect(host="localhost", user="root", passwd="root", db="agendado")
-cursor = connect.cursor()
+router = APIRouter()
 
 
-@app.get("/addDates")
+@router.post("/addDates")
 def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
     connection()
     try:
@@ -25,7 +20,7 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
         return {"Error: ", e}
 
 
-@app.get("/availableDates")
+@router.get("/availableDates")
 def availableDates(idDoctor:str):
     connection()
     try:
@@ -40,7 +35,7 @@ def availableDates(idDoctor:str):
         return {"Error: ", e}
 
 
-@app.get("/deleteDates")
+@router.delete("/deleteDates")
 def deleteDates(idDoctor:int, fecha:str, hora:str):
     connection()
     try:

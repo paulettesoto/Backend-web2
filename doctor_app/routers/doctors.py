@@ -1,16 +1,10 @@
-from fastapi import FastAPI
-import mysql.connector
 from mysql.connector import Error
-from main import connection, disconnection
+from .connection import connection,disconnection,cursor,connect
+from fastapi import APIRouter
 
-app = FastAPI()
+router = APIRouter()
 
-
-connect = mysql.connector.connect(host="localhost", user="root", passwd="root", db="agendado")
-cursor = connect.cursor()
-
-
-@app.get("/update")
+@router.put("/update")
 def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str, Cedula:str, HojaDoctor:str, Foto:str):
     connection()
     try:
@@ -27,7 +21,7 @@ def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str,
     disconnection()
 
 
-@app.get("/updatePswrd")
+@router.put("/updatePswrd")
 def updatePswrd(idDoctor:int, Contrasena:str, ContrasenaNueva:str):
     connection()
     try:

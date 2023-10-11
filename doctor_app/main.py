@@ -1,32 +1,19 @@
 from fastapi import FastAPI
-import mysql.connector
 from mysql.connector import Error
+from .connection import connection, cursor,connect
+from .routers import dates, comments, doctors, clinicalrecords, patients, treatments,uploadImages,uploadDocs,sendMessage
+
 
 app = FastAPI()
-
-
-connect = mysql.connector.connect(host="localhost", user="root", passwd="root", db="agendado")
-cursor = connect.cursor()
-
-@app.get("/connection")
-def connection(): #FUNCION PARA HACER CONEXION A BASE DE DATOS
-    try:
-        if connect.is_connected():
-            #db_Info = connection.get_server_info()
-            #return {"Connected to MySQL Server version ", db_Info}
-            cursor.execute("select database();")
-            record = cursor.fetchone()
-            return {"You're connected to database: ", record}
-    except Error as e:
-        return {"Error while connecting to MySQL", e}
-
-
-@app.get("/disconnection")
-def disconnection():
-    if connect.is_connected():
-        cursor.close()
-        connect.close()
-        return {"MySQL connection is closed"}
+app.include_router(dates.router)
+app.include_router(comments.router)
+app.include_router(doctors.router)
+app.include_router(clinicalrecords.router)
+app.include_router(patients.router)
+app.include_router(treatments.router)
+app.include_router(uploadImages.router)
+app.include_router(uploadDocs.router)
+app.include_router(sendMessage.router)
 
 
 @app.get("/login")
@@ -39,10 +26,9 @@ def login(user:str, pswrd:str):
             return {record}
     except Error as e:
         return {"Error: ", e}
-    disconnection()
 
 
-@app.get("/signUp")
+@app.post("/signUp")
 def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str, Cedula:str, HojaDoctor:str, Contrasena:str, Foto:str):
     connection()
     try:
@@ -56,4 +42,5 @@ def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:
         return {"Insertado con exito"}
     except Error as e:
         return {"Error: ", e}
-    disconnection()
+
+
