@@ -1,40 +1,10 @@
-Date: 6/10/2023
-Time: 16:21
-Phone Number: +526681710405
-Message: Holi
---------------------
-Date: 6/10/2023
-Time: 16:24
-Phone Number: +526671839045
-Message: Holi
---------------------
-Date: 6/10/2023
-Time: 16:26
-Phone Number: +526682430712
-Message: Holi esto es enviado desde python
---------------------
-Date: 10/10/2023
-Time: 13:43
-Phone Number: +526682430712
-Message: Holi esto es enviado desde python
---------------------
-Date: 10/10/2023
-Time: 13:47
-Phone Number: +526682430712
-Message: Holi esto es enviado desde python
---------------------
-Date: 10/10/2023
-Time: 13:55
-Phone Number: +526682430712
-Message: Holi esto es enviado desde python
---------------------
 Date: 11/10/2023
-Time: 11:24
-Phone Number: +526682104582
+Time: 15:10
+Phone Number: +526674747377
 Message: holi
 --------------------
 Date: 11/10/2023
-Time: 11:25
-Phone Number: +526682104582
-Message: holi
+Time: 15:12
+Phone Number: +526674747377
+Message: holix
 --------------------
