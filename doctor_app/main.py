@@ -1,7 +1,7 @@
-from fastapi import FastAPI, Depends
-from .dependecies import get_token_header
+from fastapi import FastAPI
+#from .dependecies import get_token_header
 from mysql.connector import Error
-from .connection import connection, cursor,connect
+from .connection import connection,cursor,connect
 from .routers import (dates, comments, doctors, clinicalrecords, patients, treatments,uploadImages,
                       uploadDocs,sendMessage)
 #from localStoragePy import localStoragePy
@@ -47,5 +47,4 @@ def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:
         return {"Insertado con exito"}
     except Error as e:
         return {"Error: ", e}
-
 

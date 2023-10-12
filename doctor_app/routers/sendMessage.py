@@ -1,12 +1,12 @@
 import pywhatkit
 from fastapi import APIRouter, Depends
-from ..dependecies import get_token_header
+#from ..dependecies import get_token_header
 
 
 router = APIRouter(
     prefix="/sendMessage",
     tags=["Enviar mensaje"],
-    dependencies=[Depends(get_token_header)],
+    #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
 
 

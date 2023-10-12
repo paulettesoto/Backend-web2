@@ -2,13 +2,13 @@
 import shutil
 import os
 from fastapi import APIRouter, File, UploadFile, Depends
-from ..dependecies import get_token_header
+#from ..dependecies import get_token_header
 
 
 router = APIRouter(
     prefix="/uploadImages",
     tags=["Guardar Imagenes"],
-    dependencies=[Depends(get_token_header)],
+    #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
 
 

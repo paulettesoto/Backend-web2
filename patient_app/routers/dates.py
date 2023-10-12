@@ -2,9 +2,6 @@ from mysql.connector import Error
 from ..connection import connection, cursor,connect
 from fastapi import APIRouter
 
-#from ..dependecies import get_token_header
-
-
 router = APIRouter(
     prefix="/dates",
     tags=["Citas"],
@@ -27,7 +24,7 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
             # connection()
             try:
                 query = ("insert into cita(Paciente_idPaciente,Doctor_idDoctor,idTratamiento,idHorario,account) "
-                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +",%s,'N');")
+                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +",%s, 'Y');")
                 val = (record)
                 cursor.execute(query, val)
                 connect.commit()
@@ -78,14 +75,14 @@ def canceldate(idCita:str):
         return {"Error: ", e}
 
 
-@router.get("/dates/")
-def dates(idDoctor: str):
+@router.get("/dates")
+def dates(idPaciente: str):
     connection()
     try:
         query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
                  "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
                  "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
-                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + ";")
+                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Paciente_idPaciente=" + idPaciente + " and account='Y';")
         cursor.execute(query)
         record = cursor.fetchall()
         # print(record)
