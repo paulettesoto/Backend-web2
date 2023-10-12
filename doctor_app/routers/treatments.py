@@ -49,12 +49,12 @@ def updateTreatment(idTratamiento:str, tratamiento:str, costo:str):
         return {"Error: ", e}
 
 @router.delete("/deleteTreatment")
-def deleteTreatment(idTratamiento: str,idDoctor:str):
+def deleteTreatment(idTratamiento: str):
     connection()
     try:
 
-        query = "delete from tratamientos where idTratamiento=%s and idDoctor=%s;"
-        val = (idTratamiento,idDoctor)
+        query = "delete from tratamientos where idTratamiento=%s;"
+        val = (idTratamiento)
         cursor.execute(query, val)
         connect.commit()
         return {"Eliminado con exito"}

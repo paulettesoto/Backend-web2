@@ -9,3 +9,16 @@ router = APIRouter(
     tags=["Comentarios"],
     dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
+
+
+@router.get("/comments")
+def getComments(idDoctor:str):
+    connection()
+    try:
+        query = ("select * from comentarios where idDoctor=" + idDoctor + ";")
+        cursor.execute(query)
+        record = cursor.fetchall()
+        # print(record)
+        return record
+    except Error as e:
+        return {"Error: ", e}
