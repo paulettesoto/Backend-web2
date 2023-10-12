@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from .connection import connection,disconnection,cursor,connect
+from ..connection import connection,disconnection,cursor,connect
 from fastapi import APIRouter, Depends
 from ..dependecies import get_token_header
 
@@ -11,11 +11,12 @@ router = APIRouter(
 )
 
 @router.put("/update")
-def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str, Cedula:str, HojaDoctor:str, Foto:str):
+def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str,
+           Cedula:str, HojaDoctor:str, Foto:str):
     connection()
     try:
-        query = ("update doctor set Nombre=%s, PrimerApe=%s, SegundoApe=%s, Celular=%s, Especialidad=%s, Correo=%s, Cedula=%s,"
-                 "HojaDoctor=%s, Foto=%s where idDoctor=%s;")
+        query = ("update doctor set Nombre=%s, PrimerApe=%s, SegundoApe=%s, Celular=%s, Especialidad=%s, "
+                 "Correo=%s, Cedula=%s,HojaDoctor=%s, Foto=%s where idDoctor=%s;")
         val =(Nombre,PrimerApe,SegundoApe,Celular,Especialidad,Correo,Cedula,HojaDoctor,Foto,idDoctor)
         cursor.execute(query,val)
         connect.commit()

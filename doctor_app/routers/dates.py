@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from .connection import connection,disconnection,cursor,connect
+from ..connection import connection,disconnection,cursor,connect
 from fastapi import APIRouter, Depends
 from ..dependecies import get_token_header
 
@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post("/dates/setDate")
+@router.post("/setDate")
 def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str):
     connection()
     try:
@@ -25,7 +25,8 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
             # disconnection()
             # connection()
             try:
-                query = ("insert into cita(Paciente_idPaciente,Doctor_idDoctor,idTratamiento,idHorario) values("+ idPaciente +","+ idDoctor +","+ idTratamiento +",%s);")
+                query = ("insert into cita(Paciente_idPaciente,Doctor_idDoctor,idTratamiento,idHorario) "
+                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +",%s);")
                 val = (record)
                 cursor.execute(query, val)
                 connect.commit()
@@ -44,7 +45,7 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
         return {"Error: ", e}
 
 
-@router.delete("/dates/cancelDate")
+@router.delete("/cancelDate")
 def canceldate(idCita:str):
     connection()
     try:
@@ -57,7 +58,7 @@ def canceldate(idCita:str):
             # disconnection()
             # connection()
             try:
-                query = ("delete from cita where idCita=%s);")
+                query = ("delete from cita where idCita=%s;")
                 val = (idCita)
                 cursor.execute(query, val)
                 connect.commit()
@@ -80,10 +81,10 @@ def canceldate(idCita:str):
 def dates(idDoctor: str):
     connection()
     try:
-        query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento INNER JOIN horarios as h on h.idhorarios=c.idHorario where Doctor_idDoctor=" + idDoctor + ";")
-        #sql = "Select p.idproduct, p.name, p.description, p.price, p.quantity, p.image, p.color, c.categoryname as categoria from products As p Inner Join categories as c on p.idcategory=c.idcategory";
-        # print(query)
-        # val = (idDoctor)
+        query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
+                 "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
+                 "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
+                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + ";")
         cursor.execute(query)
         record = cursor.fetchall()
         # print(record)

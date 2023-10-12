@@ -16,7 +16,7 @@ paciente = 'paciente1'
 path = 'G:/Mi unidad/pruebasAgendado/'+paciente+'/'+'docs'
 
 
-@router.post("/pdf")
+@router.post("/docs")
 async def docs(docs: UploadFile = File(...)):
     print(docs.filename)
     with open("doctor_app/routers/docs/"+docs.filename, "wb") as buffer:

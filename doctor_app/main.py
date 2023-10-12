@@ -2,9 +2,11 @@ from fastapi import FastAPI, Depends
 from .dependecies import get_token_header
 from mysql.connector import Error
 from .connection import connection, cursor,connect
-from .routers import dates, comments, doctors, clinicalrecords, patients, treatments,uploadImages,uploadDocs,sendMessage
+from .routers import (dates, comments, doctors, clinicalrecords, patients, treatments,uploadImages,
+                      uploadDocs,sendMessage)
+#from localStoragePy import localStoragePy
 
-
+#localStorage = localStoragePy('agendado', 'text')
 app = FastAPI()
 app.include_router(dates.router)
 app.include_router(comments.router)
@@ -16,21 +18,23 @@ app.include_router(uploadImages.router)
 app.include_router(uploadDocs.router)
 app.include_router(sendMessage.router)
 
-
+idDoctor = ""
 @app.get("/login")
 def login(user:str, pswrd:str):
     connection()
     try:
-        cursor.execute("select * from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
+        cursor.execute("select idDoctor from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            return {record}
+            idDoctor = record
+            return record
     except Error as e:
         return {"Error: ", e}
 
 
 @app.post("/signUp")
-def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str, Cedula:str, HojaDoctor:str, Contrasena:str, Foto:str):
+def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str,
+           Cedula:str, HojaDoctor:str, Contrasena:str, Foto:str):
     connection()
     try:
         query = ("insert into doctor(Nombre,PrimerApe,SegundoApe,Celular,Especialidad,Correo,Cedula,"

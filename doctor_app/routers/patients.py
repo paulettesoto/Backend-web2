@@ -1,7 +1,8 @@
 from mysql.connector import Error
-from .connection import connection,disconnection,cursor,connect
+from ..connection import connection,disconnection,cursor,connect
 from fastapi import APIRouter, Depends
 from ..dependecies import get_token_header
+#from..main import idDoctor
 
 router = APIRouter(
     prefix="/patients",
