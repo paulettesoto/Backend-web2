@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from mysql.connector import Error
 from .connection import connection,cursor,connect
 from .routers import (dates, comments, doctors, clinicalrecords, patients, treatments,uploadImages,
-                      uploadDocs,sendMessage)
+                      uploadDocs,sendMessage,pdf)
 #from localStoragePy import localStoragePy
 
 #localStorage = localStoragePy('agendado', 'text')
@@ -17,7 +17,7 @@ app.include_router(treatments.router)
 app.include_router(uploadImages.router)
 app.include_router(uploadDocs.router)
 app.include_router(sendMessage.router)
-
+app.include_router(pdf.router)
 idDoctor = ""
 @app.get("/login")
 def login(user:str, pswrd:str):
