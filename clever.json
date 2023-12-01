@@ -2,7 +2,10 @@
   "deploy": {
     "web": {
       "command": "uvicorn main:app --port 8000",
-      "framework": "python"
+      "framework": "python",
+      "env": {
+        "CC_PYTHON_MODULE": "main"
+      }
     }
   }
 }
