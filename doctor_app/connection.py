@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 
 
-connect = mysql.connector.connect(host="bwqhentfjwvfmwcaipyr-mysql.services.clever-cloud.com", user="uksz5kt6b52dvewr", passwd="IQ2BkXCexmhdQlgHa7yX", db="bwqhentfjwvfmwcaipyr")
+connect = mysql.connector.connect(host="bwqhentfjwvfmwcaipyr-mysql.services.clever-cloud.com", port="3306",user="uksz5kt6b52dvewr", passwd="IQ2BkXCexmhdQlgHa7yX", db="bwqhentfjwvfmwcaipyr")
 cursor = connect.cursor(dictionary=False)
 
 
