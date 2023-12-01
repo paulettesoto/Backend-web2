@@ -2,15 +2,16 @@ from fastapi import FastAPI
 #from .dependecies import get_token_header
 from mysql.connector import Error
 from .connection import connection,cursor,connect
-from .routers import (dates, comments, doctors, patient,schedule)
+from .routers import (patientdates, patientcomments, patientdoctors, patient,schedule)
+
 #from localStoragePy import localStoragePy
 
 #localStorage = localStoragePy('agendado', 'text')
 app = FastAPI()
-app.include_router(dates.router)
+app.include_router(patientdates.router)
 app.include_router(schedule.router)
-app.include_router(comments.router)
-app.include_router(doctors.router)
+app.include_router(patientcomments.router)
+app.include_router(patientdoctors.router)
 app.include_router(patient.router)
 
 @app.post("/signUp_paciente")

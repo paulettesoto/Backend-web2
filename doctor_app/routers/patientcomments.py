@@ -4,8 +4,8 @@ from fastapi import APIRouter
 
 
 router = APIRouter(
-    prefix="/comments",
-    tags=["Comentarios"],
+    prefix="/patientcomments",
+    tags=["Comentarios paciente"],
     #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
 

@@ -3,8 +3,8 @@ from ..connection import connection, cursor,connect
 from fastapi import APIRouter
 
 router = APIRouter(
-    prefix="/doctors",
-    tags=["Doctores"],
+    prefix="/patientdoctors",
+    tags=["Doctores - paciente"],
     #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}}
 )

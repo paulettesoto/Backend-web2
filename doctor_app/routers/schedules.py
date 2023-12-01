@@ -30,7 +30,7 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
 def availableDates(idDoctor:str):
     connection()
     try:
-        query = ("select * from horarios where idDoctor="+idDoctor+" and status=true;")
+        query = ("select * from horarios where idDoctor="+idDoctor+" and status=true and fecha>=curdate() and hora > current_time();")
         #print(query)
         #val = (idDoctor)
         cursor.execute(query)
