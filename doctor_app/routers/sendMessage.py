@@ -1,5 +1,8 @@
-import pywhatkit
 import os
+if 'DISPLAY' in os.environ:
+    import pyautogui as pg
+    import mouseinfo
+    import pywhatkit
 from fastapi import APIRouter, Depends
 
 router = APIRouter(
