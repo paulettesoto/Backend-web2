@@ -1,0 +1,10 @@
+{
+  "deploy": {
+    "web": {
+      "framework": "python",
+      "env": {
+        "CC_PYTHON_MODULE": "main"
+      }
+    }
+  }
+}
