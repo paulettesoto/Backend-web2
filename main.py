@@ -45,7 +45,7 @@ def login(user: str, pswrd: str):
         if record is not None:
             id_doctor, nombre, primer_ape, segundo_ape = record
             return {
-                "idDoctor": id_doctor,
+                "id": id_doctor,
                 "Nombre": nombre,
                 "PrimerApe": primer_ape,
                 "SegundoApe": segundo_ape
@@ -100,7 +100,7 @@ def login(user:str, pswrd:str):
         if record is not None:
             id_paciente, nombre, primer_ape, segundo_ape = record
             return {
-                "idPaciente": id_paciente,
+                "id": id_paciente,
                 "Nombre": nombre,
                 "PrimerApe": primer_ape,
                 "SegundoApe": segundo_ape
