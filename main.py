@@ -35,7 +35,7 @@ app.include_router(schedule.router)
 app.include_router(patientcomments.router)
 app.include_router(patientdoctors.router)
 app.include_router(patient.router)
-idDoctor = ""
+id = ""
 @app.get("/login")
 def login(user: str, pswrd: str):
     connect, cursor = connection()
@@ -43,8 +43,13 @@ def login(user: str, pswrd: str):
         cursor.execute("select idDoctor, Nombre, PrimerApe, SegundoApe from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            idDoctor = record
-            return idDoctor
+            id_doctor, nombre, primer_ape, segundo_ape = record
+            return {
+                "idDoctor": id_doctor,
+                "Nombre": nombre,
+                "PrimerApe": primer_ape,
+                "SegundoApe": segundo_ape
+            }
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -90,10 +95,16 @@ def signIn_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fech
 def login(user:str, pswrd:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select * from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
+        cursor.execute("select idPaciente, Nombre, PrimerApe, SegundoApe from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            return {record}
+            id_paciente, nombre, primer_ape, segundo_ape = record
+            return {
+                "idPaciente": id_paciente,
+                "Nombre": nombre,
+                "PrimerApe": primer_ape,
+                "SegundoApe": segundo_ape
+            }
     except Error as e:
         return {"Error: ", e}
     finally:
