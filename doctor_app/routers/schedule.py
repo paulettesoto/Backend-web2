@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection,disconnection,cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.get("/availableDates")
 def availableDates(idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select * from horarios where idDoctor="+idDoctor+" and status=true;")
         #print(query)
@@ -24,3 +24,5 @@ def availableDates(idDoctor:str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

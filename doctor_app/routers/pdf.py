@@ -1,7 +1,7 @@
 from fpdf import FPDF
 import os
 from mysql.connector import Error
-from ..connection import connection, cursor
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -30,7 +30,7 @@ router = APIRouter(
 
 @router.post("/pdf")
 def docs(idDoctor: str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select Pregunta from historiaclinica where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
@@ -53,3 +53,5 @@ def docs(idDoctor: str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

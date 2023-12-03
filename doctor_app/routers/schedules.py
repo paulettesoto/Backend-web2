@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection,disconnection,cursor,connect
+from ..connection import connection,disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.post("/addDates")
 def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("insert into horarios(idDoctor,fecha,hora,status) values(%s,%s,%s,%s);")
         val =(idDoctor, fecha, hora, status)
@@ -24,11 +24,13 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
         return {"Insertado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.get("/availableDates")
 def availableDates(idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select * from horarios where idDoctor="+idDoctor+" and status=true and fecha>=curdate() and hora > current_time();")
         #print(query)
@@ -39,11 +41,13 @@ def availableDates(idDoctor:str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.delete("/deleteDates")
 def deleteDates(idDoctor:int, fecha:str, hora:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select idhorarios from horarios where idDoctor=%s  and fecha=%s and hora =%s;")
         val = (idDoctor,fecha,hora)
@@ -62,10 +66,12 @@ def deleteDates(idDoctor:int, fecha:str, hora:str):
                 # if record is not None:
                 return {"Eliminado con exito"}
             except Error as e:
-                disconnection()
                 return {"Error: ", e}
+            finally:
+                disconnection(connect, cursor)
     except Error as e:
-        disconnection()
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 

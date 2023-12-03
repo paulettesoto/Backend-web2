@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 router = APIRouter(
@@ -11,7 +11,7 @@ router = APIRouter(
 
 @router.get("/buscar_doctor")
 def buscar_doc(especialidad:str):
-    connection()
+    connect, cursor = connection()
     try:
         query="select * from doctor where Especialidad='"+especialidad+"';"
         cursor.execute(query)
@@ -20,3 +20,5 @@ def buscar_doc(especialidad:str):
             return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

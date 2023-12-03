@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 
@@ -11,7 +11,7 @@ router = APIRouter(
 
 @router.post("/comentarios_paciente")
 def comentarios_paciente(comentario:str,calificacion:int,idDoctor:int):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("insert into comentarios(comentario, estrellas, idDoctor) values(%s,%s,%s);")
         val = (comentario,calificacion,idDoctor)
@@ -20,3 +20,5 @@ def comentarios_paciente(comentario:str,calificacion:int,idDoctor:int):
         return {"Gracias por sus comentarios"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

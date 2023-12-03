@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection,disconnection,cursor,connect
+from ..connection import connection,disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -14,7 +14,7 @@ router = APIRouter(
 @router.put("/update")
 def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str,
            Cedula:str, HojaDoctor:str, Foto:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("update doctor set Nombre=%s, PrimerApe=%s, SegundoApe=%s, Celular=%s, Especialidad=%s, "
                  "Correo=%s, Cedula=%s,HojaDoctor=%s, Foto=%s where idDoctor=%s;")
@@ -26,7 +26,9 @@ def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str,
         return {"Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
-    disconnection()
+    finally:
+        disconnection(connect, cursor)
+
 
 
 @router.put("/updatePswrd")
@@ -51,7 +53,9 @@ def updatePswrd(idDoctor:int, Contrasena:str, ContrasenaNueva:str):
                 return {"Contraseña actualizada con exito"}
             except Error as e:
                 return {"Error: ", e}
-        disconnection()
+            finally:
+                disconnection(connect, cursor)
     except Error as e:
         return {"Error: ", e}
-    disconnection()
+    finally:
+        disconnection(connect, cursor)

@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.get("/treatments")
 def getTreatments(idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select * from tratamientos where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
@@ -23,11 +23,13 @@ def getTreatments(idDoctor:str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.post("/addTreatment")
 def addtreatment(tratamiento:str,idDoctor:str,costo:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("insert into tratamientos(Tratamiento,idDoctor,Costo) values(%s,%s,%s);")
         val =(tratamiento,idDoctor,costo)
@@ -36,10 +38,12 @@ def addtreatment(tratamiento:str,idDoctor:str,costo:str):
         return {"Registrado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 @router.put("/updateTreatment")
 def updateTreatment(idTratamiento:str, tratamiento:str, costo:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("update tratamientos set Tratamiento=%s, Costo=%s where idTratamiento=%s;")
         val =(tratamiento,costo,idTratamiento)
@@ -48,10 +52,12 @@ def updateTreatment(idTratamiento:str, tratamiento:str, costo:str):
         return {"Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 @router.delete("/deleteTreatment")
 def deleteTreatment(idTratamiento: str):
-    connection()
+    connect, cursor = connection()
     try:
 
         query = "delete from tratamientos where idTratamiento=%s;"
@@ -61,4 +67,6 @@ def deleteTreatment(idTratamiento: str):
         return {"Eliminado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 

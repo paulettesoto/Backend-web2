@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post("/setDate")
 def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select idhorarios from horarios where idDoctor=%s  and fecha=%s and hora =%s;")
         val = (idDoctor,fecha,hora)
@@ -40,15 +40,21 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
                     return {"agendado con exito"}
                 except Error as e:
                     return {"Error: ", e}
+                finally:
+                    disconnection(connect, cursor)
             except Error as e:
                 return {"Error: ", e}
+            finally:
+                disconnection(connect, cursor)
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.delete("/cancelDate")
 def canceldate(idCita:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select idHorario from cita where idCIta=%s;")
         val = (idCita)
@@ -72,15 +78,21 @@ def canceldate(idCita:str):
                     return {"Cita cancelada con exito"}
                 except Error as e:
                     return {"Error: ", e}
+                finally:
+                    disconnection(connect, cursor)
             except Error as e:
                 return {"Error: ", e}
+            finally:
+                disconnection(connect, cursor)
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.get("/dates/")
 def dates(idDoctor: str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
                  "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
@@ -92,3 +104,5 @@ def dates(idDoctor: str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

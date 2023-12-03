@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.get("/comments")
 def getComments(idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select * from comentarios where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
@@ -23,3 +23,5 @@ def getComments(idDoctor:str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)

@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from ..connection import connection, cursor,connect
+from ..connection import connection, disconnection
 from fastapi import APIRouter
 
 #from ..dependecies import get_token_header
@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.get("/clinicalRecords")
 def getQuestions(idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("select * from historiaclinica where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
@@ -23,11 +23,13 @@ def getQuestions(idDoctor:str):
         return record
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 @router.post("/addQuestion")
 def addQuestion(pregunta:str,idDoctor:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("insert into historiaclinica(Pregunta,idDoctor) values(%s,%s);")
         val =(pregunta,idDoctor)
@@ -36,10 +38,12 @@ def addQuestion(pregunta:str,idDoctor:str):
         return {"Registrado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 @router.put("/updateQuestion")
 def updateQuestion(idHistoriaClinica:str, pregunta:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("update historiaclinica set pregunta=%s where idhistoriaClinica=%s;")
         val =(pregunta,idHistoriaClinica)
@@ -48,10 +52,12 @@ def updateQuestion(idHistoriaClinica:str, pregunta:str):
         return {"Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 @router.delete("/deleteQuestion")
 def deleteQuestion(idHistoriaClinica: str):
-    connection()
+    connect, cursor = connection()
     try:
 
         query = "delete from historiaclinica where idhistoriaClinica="+idHistoriaClinica+";"
@@ -61,6 +67,8 @@ def deleteQuestion(idHistoriaClinica: str):
         return {"Eliminado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
 
 

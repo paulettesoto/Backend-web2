@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 #from .dependecies import get_token_header
 from mysql.connector import Error
-from doctor_app.connection import connection,cursor,connect
+from doctor_app.connection import connection, disconnection
 from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patients, treatments, uploadImages,
                                 uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors, patient,schedule)
 #from localStoragePy import localStoragePy
@@ -11,13 +11,12 @@ from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patie
 #localStorage = localStoragePy('agendado', 'text')
 app = FastAPI()
 
-# Configurar CORS para permitir solicitudes desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Esto permite solicitudes desde cualquier origen
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],   # Esto permite cualquier método (GET, POST, etc.)
-    allow_headers=["*"],   # Esto permite cualquier encabezado en la solicitud
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(dates.router)
@@ -38,22 +37,25 @@ app.include_router(patientdoctors.router)
 app.include_router(patient.router)
 idDoctor = ""
 @app.get("/login")
-def login(user:str, pswrd:str):
-    connection()
+def login(user: str, pswrd: str):
+    connect, cursor = connection()
     try:
         cursor.execute("select idDoctor from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
             idDoctor = record
-            return record
+            return idDoctor
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect,cursor)
+
 
 
 @app.post("/signUp")
 def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:str, Correo:str,
            Cedula:str, HojaDoctor:str, Contrasena:str, Foto:str):
-    connection()
+    connect, cursor = connection()
     try:
         query = ("insert into doctor(Nombre,PrimerApe,SegundoApe,Celular,Especialidad,Correo,Cedula,"
                  "HojaDoctor,Contrasena,Foto) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);")
@@ -65,11 +67,13 @@ def signUp(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, Especialidad:
         return {"Insertado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect,cursor)
 
 
 @app.post("/signUp_paciente")
 def signIn_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fecha_nac:str, Correo:str, Contrasena:str, confirmar_contra:str):
-    connection()
+    connect, cursor = connection()
     try:
         if(Contrasena==confirmar_contra):
             query = ("insert into paciente(Nombre,PrimerApe,SegundoApe,Celular,FechaNac,Correo,Contrasena) values(%s,%s,%s,%s,%s,%s,%s);")
@@ -79,10 +83,12 @@ def signIn_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fech
         return {"Registrado con exito"}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect,cursor)
 
 @app.get("/login_paciente")
 def login(user:str, pswrd:str):
-    connection()
+    connect, cursor = connection()
     try:
         cursor.execute("select * from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
@@ -90,6 +96,8 @@ def login(user:str, pswrd:str):
             return {record}
     except Error as e:
         return {"Error: ", e}
+    finally:
+        disconnection(connect,cursor)
 
 
 if __name__ == "__main__":
