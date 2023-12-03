@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Form, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 #from .dependecies import get_token_header
 from mysql.connector import Error
@@ -9,6 +10,16 @@ from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patie
 
 #localStorage = localStoragePy('agendado', 'text')
 app = FastAPI()
+
+# Configurar CORS para permitir solicitudes desde cualquier origen
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Esto permite solicitudes desde cualquier origen
+    allow_credentials=True,
+    allow_methods=["*"],   # Esto permite cualquier método (GET, POST, etc.)
+    allow_headers=["*"],   # Esto permite cualquier encabezado en la solicitud
+)
+
 app.include_router(dates.router)
 app.include_router(schedules.router)
 app.include_router(comments.router)
