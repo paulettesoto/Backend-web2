@@ -5,8 +5,8 @@ from fastapi import APIRouter
 #from ..dependecies import get_token_header
 
 router = APIRouter(
-    prefix="/doctorschedules",
-    tags=["Horarios"],
+    prefix="/patientschedules",
+    tags=["Horarios paciente"],
     #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
 
