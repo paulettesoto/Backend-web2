@@ -32,8 +32,8 @@ def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str,
 
 
 @router.put("/updatePswrd")
-def updatePswrd(idDoctor:int, Contrasena:str, ContrasenaNueva:str):
-    connection()
+def updatePswrd(idDoctor:int, Contrasena:str, ContrasenaNueva:str,verif_contra:str):
+    connect, cursor = connection()
     try:
         query = ("select * from doctor where idDoctor=%s  and Contrasena=%s;")
         val = (idDoctor, Contrasena)
@@ -44,13 +44,16 @@ def updatePswrd(idDoctor:int, Contrasena:str, ContrasenaNueva:str):
             #disconnection()
             #connection()
             try:
-                query = ("update doctor set Contrasena=%s where idDoctor=%s;")
-                val =(ContrasenaNueva,idDoctor)
-                cursor.execute(query,val)
-                connect.commit()
+                if ContrasenaNueva == verif_contra:
+                    query = ("update doctor set Contrasena=%s where idDoctor=%s;")
+                    val =(ContrasenaNueva,idDoctor)
+                    cursor.execute(query,val)
+                    connect.commit()
                 #record = cursor.rowcount()
                 #if record is not None:
-                return {"Contraseña actualizada con exito"}
+                    return {"success": "Contraseña actualizada con exito"}
+                else:
+                    return {"Error": "La verificacion de la contraseña no coincide con la contraseña nueva"}
             except Error as e:
                 return {"Error: ", e}
             finally:

@@ -90,7 +90,7 @@ def canceldate(idCita:str):
         disconnection(connect, cursor)
 
 
-@router.get("/dates/")
+@router.get("/dates")
 def dates(idDoctor: str):
     connect, cursor = connection()
     try:
