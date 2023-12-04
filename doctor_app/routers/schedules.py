@@ -29,10 +29,10 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
 
 
 @router.get("/availableDates")
-def availableDates(idDoctor:str):
+def availableDates(idDoctor:str, fecha:str):
     connect, cursor = connection()
     try:
-        query = ("select * from horarios where idDoctor="+idDoctor+" and status=true and fecha>=curdate() and hora > current_time();")
+        query = ("select * from horarios where idDoctor="+idDoctor+" and status=true and fecha>=curdate() and hora > current_time() and fecha="+fecha+";")
         #print(query)
         #val = (idDoctor)
         cursor.execute(query)
