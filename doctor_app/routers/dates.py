@@ -29,21 +29,24 @@ def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fec
 def ListaPacientes(idDoctor:str,celular:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select * from pacienteDoctor where Celular="+celular+" and idDoctor =" + idDoctor + ";")
-        records = cursor.fetchall()
-
+        cursor.execute("select idPaciente from pacienteDoctor where Celular="+celular+" and idDoctor =" + idDoctor + ";")
+        records = cursor.fetchone()
+        id = str(records[0])
         if records:
-            return 1
+            return id
+        else:
+            return 0
     except Error as e:
         return {"Error: ", e}
     finally:
         disconnection(connect, cursor)
 @router.post("/setDate")
 def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idTratamiento:str,idDoctor:str,edad:str,fechanac:str, fecha:str, hora:str, idPaciente:str):
-    if ListaPacientes(idDoctor,celular) != 1:
-        print("aqui")
+    if ListaPacientes(idDoctor,celular) == 0:
         idPaciente = str(agregar_paciente(Nombre,PrimerApe,SegundoApe,celular,fechanac,correo,edad,idDoctor))
-        print(idPaciente)
+    else:
+        idPaciente = ListaPacientes(idDoctor,celular)
+
     connect, cursor = connection()
     try:
         query = ("select idhorarios from horarios where idDoctor=%s  and fecha=%s and hora =%s;")
