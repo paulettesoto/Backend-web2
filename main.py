@@ -5,7 +5,8 @@ import uvicorn
 from mysql.connector import Error
 from doctor_app.connection import connection, disconnection
 from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patients, treatments, uploadImages,
-                                uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors, patient, patientschedule)
+                                uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors,
+                                patient, patientschedule)
 #from localStoragePy import localStoragePy
 
 #localStorage = localStoragePy('agendado', 'text')
@@ -23,8 +24,8 @@ app.include_router(dates.router)
 app.include_router(schedules.router)
 app.include_router(comments.router)
 app.include_router(doctors.router)
-app.include_router(clinicalrecords.router)
 app.include_router(patients.router)
+app.include_router(clinicalrecords.router)
 app.include_router(treatments.router)
 app.include_router(uploadImages.router)
 app.include_router(uploadDocs.router)
