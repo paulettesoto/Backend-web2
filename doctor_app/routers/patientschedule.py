@@ -19,16 +19,22 @@ def availableDates(idDoctor:str):
         #print(query)
         #val = (idDoctor)
         cursor.execute(query)
-        record = cursor.fetchall()
-        #print(record)
-        idHorario, idDoctor, fecha, hora, status = record
-        return {
-            "id": idHorario,
-            "Nombre": idDoctor,
-            "PrimerApe": fecha,
-            "SegundoApe": hora,
-            "status": status
-        }
+        records = cursor.fetchall()
+
+        if records:
+            dates_list = []
+            for record in records:
+                idHorario, idDoctor, fecha, hora, status = record
+                date_dict = {
+                    "id": idHorario,
+                    "idDoctor": idDoctor,
+                    "fecha": fecha,
+                    "hora": hora,
+                    "status": status
+                }
+                dates_list.append(date_dict)
+
+            return {"availableDates": dates_list}
     except Error as e:
         return {"Error: ", e}
     finally:

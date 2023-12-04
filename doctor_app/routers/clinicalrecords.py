@@ -18,14 +18,20 @@ def getQuestions(idDoctor:str):
     try:
         query = ("select * from historiaclinica where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
-        record = cursor.fetchall()
-        # print(record)
-        id, pregunta, iddoctor = record
-        return {
-            "id": id,
-            "pregunta": pregunta,
-            "doctor": iddoctor
-        }
+        records = cursor.fetchall()
+
+        if records:
+            clinical_records_list = []
+            for record in records:
+                id, pregunta, iddoctor = record
+                clinical_record_dict = {
+                    "id": id,
+                    "pregunta": pregunta,
+                    "doctor": iddoctor
+                }
+                clinical_records_list.append(clinical_record_dict)
+
+            return {"clinicalRecords": clinical_records_list}
     except Error as e:
         return {"Error: ", e}
     finally:

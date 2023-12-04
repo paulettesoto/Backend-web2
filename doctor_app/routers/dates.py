@@ -99,17 +99,23 @@ def dates(idDoctor: str):
                  "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
                  "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + ";")
         cursor.execute(query)
-        record = cursor.fetchall()
-        # print(record)
-        idcita, nombre, dnombre, tratamiento, fecha, hora = record
-        return {
-            "id": idcita,
-            "Nombre": nombre,
-            "Doctor": dnombre,
-            "tratamiento": tratamiento,
-            "fecha": fecha,
-            "hora": hora
-        }
+        records = cursor.fetchall()
+
+        if records:
+            dates_list = []
+            for record in records:
+                idcita, nombre, dnombre, tratamiento, fecha, hora = record
+                date_dict = {
+                    "id": idcita,
+                    "Nombre": nombre,
+                    "Doctor": dnombre,
+                    "tratamiento": tratamiento,
+                    "fecha": fecha,
+                    "hora": hora
+                }
+                dates_list.append(date_dict)
+
+            return {"dates": dates_list}
     except Error as e:
         return {"Error: ", e}
     finally:

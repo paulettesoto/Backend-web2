@@ -18,15 +18,21 @@ def getComments(idDoctor:str):
     try:
         query = ("select * from comentarios where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
-        record = cursor.fetchall()
-        # print(record)
-        idcommentario, comentario, estrellas, iddoctor = record
-        return {
-            "id": idcommentario,
-            "comentario": comentario,
-            "estrellas": estrellas,
-            "iddoctor": iddoctor
-        }
+        records = cursor.fetchall()
+
+        if records:
+            comments_list = []
+            for record in records:
+                idcommentario, comentario, estrellas, iddoctor = record
+                comment_dict = {
+                    "id": idcommentario,
+                    "comentario": comentario,
+                    "estrellas": estrellas,
+                    "iddoctor": iddoctor
+                }
+                comments_list.append(comment_dict)
+
+            return {"comments": comments_list}
     except Error as e:
         return {"Error: ", e}
     finally:

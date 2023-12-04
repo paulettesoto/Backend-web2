@@ -1,6 +1,7 @@
 from mysql.connector import Error
 from ..connection import connection, disconnection
 from fastapi import APIRouter
+from typing import List
 
 #from ..dependecies import get_token_header
 #from..main import idDoctor
@@ -18,21 +19,27 @@ def ListaPacientes(idDoctor:str):
     connect, cursor = connection()
     try:
         cursor.execute("select * from pacienteDoctor where idDoctor =" + idDoctor + ";")
-        record = cursor.fetchall()
-        if record is not None:
-            idPaciente, nombre, primerApe,segundoApe, celular, fechaNac, correo,edad,iddoctor,cuenta = record
-            return {
-                "id": idPaciente,
-                "Nombre": nombre,
-                "PrimerApe": primerApe,
-                "SegundoApe": segundoApe,
-                "celular": celular,
-                "fechaNac": fechaNac,
-                "correo": correo,
-                "edad": edad,
-                "idDoctor": iddoctor,
-                "cuenta": cuenta
-            }
+        records = cursor.fetchall()
+
+        if records:
+            patients_list = []
+            for record in records:
+                idPaciente, nombre, primerApe, segundoApe, celular, fechaNac, correo, edad, iddoctor, cuenta = record
+                patient_dict = {
+                    "id": idPaciente,
+                    "Nombre": nombre,
+                    "PrimerApe": primerApe,
+                    "SegundoApe": segundoApe,
+                    "celular": celular,
+                    "fechaNac": fechaNac,
+                    "correo": correo,
+                    "edad": edad,
+                    "idDoctor": iddoctor,
+                    "cuenta": cuenta
+                }
+
+                patients_list.append(patient_dict)
+            return {"patients": patients_list}
     except Error as e:
         return {"Error: ", e}
     finally:

@@ -18,15 +18,21 @@ def getTreatments(idDoctor:str):
     try:
         query = ("select * from tratamientos where idDoctor=" + idDoctor + ";")
         cursor.execute(query)
-        record = cursor.fetchall()
-        # print(record)
-        idTratamiento, Tratamiento, idDoctor, Costo = record
-        return {
-            "id": idTratamiento,
-            "tratamiento": Tratamiento,
-            "idDoctor": idDoctor,
-            "costo": Costo
-        }
+        records = cursor.fetchall()
+
+        if records:
+            treatments_list = []
+            for record in records:
+                idTratamiento, Tratamiento, idDoctor, Costo = record
+                treatment_dict = {
+                    "id": idTratamiento,
+                    "tratamiento": Tratamiento,
+                    "idDoctor": idDoctor,
+                    "costo": Costo
+                }
+                treatments_list.append(treatment_dict)
+
+            return {"treatments": treatments_list}
     except Error as e:
         return {"Error: ", e}
     finally:

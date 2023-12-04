@@ -15,21 +15,25 @@ def buscar_doc(especialidad:str):
     try:
         query="select idDoctor, Nombre, PrimerApe, SegundoApe, Celular, Especialidad, Correo, Cedula, Foto from doctor where Especialidad='"+especialidad+"';"
         cursor.execute(query)
-        record = cursor.fetchall()
-        if record is not None:
-            iddoctor, nombre, primer_ape, segundo_ape, celular, especialidad,correo, cedula, foto = record
-            return {
-                "id": iddoctor,
-                "Nombre": nombre,
-                "PrimerApe": primer_ape,
-                "SegundoApe": segundo_ape,
-                "Celular": celular,
-                "Especialidad": especialidad,
-                "Correo": correo,
-                "Cedula": cedula,
-                "Foto": foto,
+        records = cursor.fetchall()
 
-            }
+        if records:
+            doctors_list = []
+            for record in records:
+                iddoctor, nombre, primer_ape, segundo_ape, celular, especialidad, correo, cedula, foto = record
+                doctor_dict = {
+                    "id": iddoctor,
+                    "Nombre": nombre,
+                    "PrimerApe": primer_ape,
+                    "SegundoApe": segundo_ape,
+                    "Celular": celular,
+                    "Especialidad": especialidad,
+                    "Correo": correo,
+                    "Cedula": cedula,
+                    "Foto": foto
+                }
+                doctors_list.append(doctor_dict)
+            return {"doctors": doctors_list}
     except Error as e:
         return {"Error: ", e}
     finally:
