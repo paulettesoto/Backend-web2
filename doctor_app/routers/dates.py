@@ -12,9 +12,38 @@ router = APIRouter(
     responses={404: {"description": "Not found"}}
 )
 
+def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fecha_nac:str, Correo:str, edad:str,idDoctor:str):
+    connect, cursor = connection()
+    try:
+        query = ("insert into pacienteDoctor(Nombre,PrimerApe,SegundoApe,Celular,FechaNac,Correo,Edad,idDoctor,cuenta) values(%s,%s,%s,%s,%s,%s,%s,%s,0);")
+        val =(Nombre,PrimerApe,SegundoApe,Celular,fecha_nac,Correo,edad,idDoctor)
+        cursor.execute(query,val)
+        connect.commit()
+        last_inserted_id = cursor.lastrowid
+        return last_inserted_id
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 
+def ListaPacientes(idDoctor:str,celular:str):
+    connect, cursor = connection()
+    try:
+        cursor.execute("select * from pacienteDoctor where Celular="+celular+" and idDoctor =" + idDoctor + ";")
+        records = cursor.fetchall()
+
+        if records:
+            return 1
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
 @router.post("/setDate")
-def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str):
+def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idTratamiento:str,idDoctor:str,edad:str,fechanac:str, fecha:str, hora:str, idPaciente:str):
+    if ListaPacientes(idDoctor,celular) != 1:
+        print("aqui")
+        idPaciente = str(agregar_paciente(Nombre,PrimerApe,SegundoApe,celular,fechanac,correo,edad,idDoctor))
+        print(idPaciente)
     connect, cursor = connection()
     try:
         query = ("select idhorarios from horarios where idDoctor=%s  and fecha=%s and hora =%s;")
@@ -26,10 +55,11 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
             # disconnection()
             # connection()
             try:
+                val = str(record[0])
                 query = ("insert into cita(Paciente_idPaciente,Doctor_idDoctor,idTratamiento,idHorario,account) "
-                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +",%s,'N');")
-                val = (record)
-                cursor.execute(query, val)
+                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +","+val+",'N');")
+                print(query)
+                cursor.execute(query)
                 connect.commit()
                 # if record is not None:
                 try:
