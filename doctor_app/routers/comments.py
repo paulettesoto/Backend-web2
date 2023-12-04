@@ -20,7 +20,13 @@ def getComments(idDoctor:str):
         cursor.execute(query)
         record = cursor.fetchall()
         # print(record)
-        return record
+        idcommentario, comentario, estrellas, iddoctor = record
+        return {
+            "id": idcommentario,
+            "comentario": comentario,
+            "estrellas": estrellas,
+            "iddoctor": iddoctor
+        }
     except Error as e:
         return {"Error: ", e}
     finally:

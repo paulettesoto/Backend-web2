@@ -20,7 +20,12 @@ def getQuestions(idDoctor:str):
         cursor.execute(query)
         record = cursor.fetchall()
         # print(record)
-        return record
+        id, pregunta, iddoctor = record
+        return {
+            "id": id,
+            "pregunta": pregunta,
+            "doctor": iddoctor
+        }
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -35,7 +40,7 @@ def addQuestion(pregunta:str,idDoctor:str):
         val =(pregunta,idDoctor)
         cursor.execute(query,val)
         connect.commit()
-        return {"Registrado con exito"}
+        return {"success": "Registrado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -49,7 +54,7 @@ def updateQuestion(idHistoriaClinica:str, pregunta:str):
         val =(pregunta,idHistoriaClinica)
         cursor.execute(query,val)
         connect.commit()
-        return {"Actualizado con exito"}
+        return {"success": "Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -64,7 +69,7 @@ def deleteQuestion(idHistoriaClinica: str):
         #val = idHistoriaClinica
         cursor.execute(query)
         connect.commit()
-        return {"Eliminado con exito"}
+        return {"success": "Eliminado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:

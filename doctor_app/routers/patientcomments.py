@@ -17,7 +17,7 @@ def comentarios_paciente(comentario:str,calificacion:int,idDoctor:int):
         val = (comentario,calificacion,idDoctor)
         cursor.execute(query, val)
         connect.commit()
-        return {"Gracias por sus comentarios"}
+        return {"success": "Gracias por sus comentarios"}
     except Error as e:
         return {"Error: ", e}
     finally:

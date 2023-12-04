@@ -5,7 +5,7 @@ from fastapi import APIRouter
 #from ..dependecies import get_token_header
 
 router = APIRouter(
-    prefix="/schedules",
+    prefix="/doctorschedules",
     tags=["Horarios"],
     #dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}})
@@ -21,7 +21,14 @@ def availableDates(idDoctor:str):
         cursor.execute(query)
         record = cursor.fetchall()
         #print(record)
-        return record
+        idHorario, idDoctor, fecha, hora, status = record
+        return {
+            "id": idHorario,
+            "Nombre": idDoctor,
+            "PrimerApe": fecha,
+            "SegundoApe": hora,
+            "status": status
+        }
     except Error as e:
         return {"Error: ", e}
     finally:

@@ -13,11 +13,23 @@ router = APIRouter(
 def buscar_doc(especialidad:str):
     connect, cursor = connection()
     try:
-        query="select * from doctor where Especialidad='"+especialidad+"';"
+        query="select idDoctor, Nombre, PrimerApe, SegundoApe, Celular, Especialidad, Correo, Cedula, Foto from doctor where Especialidad='"+especialidad+"';"
         cursor.execute(query)
         record = cursor.fetchall()
         if record is not None:
-            return record
+            iddoctor, nombre, primer_ape, segundo_ape, celular, especialidad,correo, cedula, foto = record
+            return {
+                "id": iddoctor,
+                "Nombre": nombre,
+                "PrimerApe": primer_ape,
+                "SegundoApe": segundo_ape,
+                "Celular": celular,
+                "Especialidad": especialidad,
+                "Correo": correo,
+                "Cedula": cedula,
+                "Foto": foto,
+
+            }
     except Error as e:
         return {"Error: ", e}
     finally:

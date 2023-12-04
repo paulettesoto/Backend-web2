@@ -21,7 +21,7 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
         connect.commit()
         #record = cursor.rowcount()
         #if record is not None:
-        return {"Insertado con exito"}
+        return {"success": "Insertado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -38,7 +38,14 @@ def availableDates(idDoctor:str):
         cursor.execute(query)
         record = cursor.fetchall()
         #print(record)
-        return record
+        idHorario, idDoctor, fecha, hora, status = record
+        return {
+            "id": idHorario,
+            "Nombre": idDoctor,
+            "PrimerApe": fecha,
+            "SegundoApe": hora,
+            "status": status
+        }
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -64,7 +71,7 @@ def deleteDates(idDoctor:int, fecha:str, hora:str):
                 connect.commit()
                 # record = cursor.rowcount()
                 # if record is not None:
-                return {"Eliminado con exito"}
+                return {"success": "Eliminado con exito"}
             except Error as e:
                 return {"Error: ", e}
             finally:

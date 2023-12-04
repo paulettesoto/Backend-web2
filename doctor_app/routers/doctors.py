@@ -23,7 +23,7 @@ def update(idDoctor:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str,
         connect.commit()
         #record = cursor.rowcount()
         #if record is not None:
-        return {"Actualizado con exito"}
+        return {"success": "Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:

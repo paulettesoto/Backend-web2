@@ -17,7 +17,7 @@ def update_paciente(idPaciente:int, Nombre:str, PrimerApe:str, SegundoApe:str, C
         val =(Nombre,PrimerApe,SegundoApe,Celular,fecha_nac,Correo,idPaciente)
         cursor.execute(query,val)
         connect.commit()
-        return {"Actualizado con exito"}
+        return {"success": "Actualizado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
@@ -38,9 +38,9 @@ def updatePswrd(idPaciente:int, Contrasena_actual:str, ContrasenaNueva:str, veri
                     val =(ContrasenaNueva,idPaciente)
                     cursor.execute(query,val)
                     connect.commit()
-                    return {"Contraseña actualizada con exito"}
+                    return {"success": "Contraseña actualizada con exito"}
                 else:
-                    return {"La verificacion de la contraseña no coincide con la contraseña nueva"}
+                    return {"error": "La verificacion de la contraseña no coincide con la contraseña nueva"}
             except Error as e:
                 return {"Error: ", e}
 

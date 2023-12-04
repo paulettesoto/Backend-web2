@@ -17,7 +17,7 @@ def connection(): #FUNCION PARA HACER CONEXION A BASE DE DATOS
             record = cursor.fetchone()
             return connect, cursor
     except Error as e:
-        return {"Error while connecting to MySQL", e}
+        return {"Error: ", e}
 
 
 #def disconnection(connect, cursor):
@@ -39,7 +39,7 @@ def disconnection(connect, cursor):
 
             connect.close()
 
-            return {"MySQL connection is closed"}
+            return {"success": "MySQL connection is closed"}
 
     except mysql.connector.Error as e:
         return {"Error: ", e}

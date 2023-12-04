@@ -34,7 +34,7 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
                     val = (record)
                     cursor.execute(query, val)
                     connect.commit()
-                    return {"agendado con exito"}
+                    return {"success": "agendado con exito"}
                 except Error as e:
                     return {"Error: ", e}
                 finally:
@@ -72,7 +72,7 @@ def canceldate(idCita:str):
                     val = (record)
                     cursor.execute(query, val)
                     connect.commit()
-                    return {"Cita cancelada con exito"}
+                    return {"success": "Cita cancelada con exito"}
                 except Error as e:
                     return {"Error: ", e}
                 finally:
@@ -98,7 +98,14 @@ def dates(idPaciente: str):
         cursor.execute(query)
         record = cursor.fetchall()
         # print(record)
-        return record
+        idcita, nombre, tratamiento, fecha, hora = record
+        return {
+            "id": idcita,
+            "Nombre": nombre,
+            "tratamiento": tratamiento,
+            "fecha": fecha,
+            "hora": hora
+        }
     except Error as e:
         return {"Error: ", e}
     finally:
