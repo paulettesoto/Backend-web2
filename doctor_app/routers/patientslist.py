@@ -17,10 +17,10 @@ router = APIRouter(
 def ListaPacientes(idDoctor:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select * from paciente-doctor where idDoctor =" + idDoctor + ";")
+        cursor.execute("select * from pacienteDoctor where idDoctor =" + idDoctor + ";")
         record = cursor.fetchall()
         if record is not None:
-            idPaciente, nombre, primerApe,segundoApe, celular, fechaNac, correo,edad,iddoctor = record
+            idPaciente, nombre, primerApe,segundoApe, celular, fechaNac, correo,edad,iddoctor,cuenta = record
             return {
                 "id": idPaciente,
                 "Nombre": nombre,
@@ -30,7 +30,8 @@ def ListaPacientes(idDoctor:str):
                 "fechaNac": fechaNac,
                 "correo": correo,
                 "edad": edad,
-                "idDoctor": iddoctor
+                "idDoctor": iddoctor,
+                "cuenta": cuenta
             }
     except Error as e:
         return {"Error: ", e}
@@ -42,7 +43,7 @@ def ListaPacientes(idDoctor:str):
 def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fecha_nac:str, Correo:str, edad:str,idDoctor:str):
     connect, cursor = connection()
     try:
-        query = ("insert into paciente-doctor(Nombre,PrimerApe,SegundoApe,Celular,FechaNac,Correo,Edad,idDoctor) values(%s,%s,%s,%s,%s,%s,%s,%s);")
+        query = ("insert into pacienteDoctor(Nombre,PrimerApe,SegundoApe,Celular,FechaNac,Correo,Edad,idDoctor,cuenta) values(%s,%s,%s,%s,%s,%s,%s,%s,0);")
         val =(Nombre,PrimerApe,SegundoApe,Celular,fecha_nac,Correo,edad,idDoctor)
         cursor.execute(query,val)
         connect.commit()
@@ -56,7 +57,7 @@ def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fec
 def update_paciente(idPaciente:int, Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str,fecha_nac:str, Correo:str,edad:str):
     connect, cursor = connection()
     try:
-        query = ("update paciente set Nombre=%s, PrimerApe=%s, SegundoApe=%s, Celular=%s, FechaNac=%s, Correo=%s, Edad=%s where idPaciente=%s;")
+        query = ("update pacienteDoctor set Nombre=%s, PrimerApe=%s, SegundoApe=%s, Celular=%s, FechaNac=%s, Correo=%s, Edad=%s where idPaciente=%s;")
         val =(Nombre,PrimerApe,SegundoApe,Celular,fecha_nac,Correo,edad,idPaciente)
         cursor.execute(query,val)
         connect.commit()
@@ -70,12 +71,12 @@ def update_paciente(idPaciente:int, Nombre:str, PrimerApe:str, SegundoApe:str, C
 def deletePaciente(celular: str,idDoctor:str):
     connect, cursor = connection()
     try:
-        query = "select idPaciente from paciente-doctor where idDoctor="+idDoctor+" and Celular="+celular+";"
+        query = "select idPaciente from pacienteDoctor where idDoctor="+idDoctor+" and Celular="+celular+";"
         cursor.execute(query)
         record = cursor.fetchone()
         if record is not None:
             try:
-                query = "delete from paciente-doctor where idPaciente=%s;"
+                query = "delete from pacienteDoctor where idPaciente=%s;"
                 val = record
                 print(record)
                 cursor.execute(query, val)
