@@ -8,7 +8,7 @@ router = APIRouter(
 
 # Configuración de Twilio
 account_sid = "ACef3aa565fe7150e6f252bd6ce108646f"
-auth_token = "8befb773fd514ccb8b7743476f167893"
+auth_token = "ACef3aa565fe7150e6f252bd6ce108646f"
 client = Client(account_sid, auth_token)
 
 @router.post("/sendMessage")
