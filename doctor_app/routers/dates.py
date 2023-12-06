@@ -130,7 +130,7 @@ def dates(idDoctor: str, fecha:str):
         query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
                  "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
                  "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
-                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + " and h.fecha >= "+fecha+" ;")
+                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + " and h.fecha = "+fecha+" ;")
         cursor.execute(query)
         records = cursor.fetchall()
 
