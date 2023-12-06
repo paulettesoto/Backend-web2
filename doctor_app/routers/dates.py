@@ -90,7 +90,7 @@ def canceldate(idCita:str):
     connect, cursor = connection()
     try:
         query = ("select idHorario from cita where idCIta=%s;")
-        val = (idCita)
+        val = (idCita,)
         cursor.execute(query, val)
         record = cursor.fetchone()
         if record is not None:
@@ -99,7 +99,7 @@ def canceldate(idCita:str):
             # connection()
             try:
                 query = ("delete from cita where idCita=%s;")
-                val = (idCita)
+                val = (idCita,)
                 cursor.execute(query, val)
                 connect.commit()
                 # if record is not None:
