@@ -143,7 +143,7 @@ def dates(idDoctor: str, fecha:str):
             "INNER JOIN doctor AS d ON d.idDoctor = c.Doctor_idDoctor "
             "INNER JOIN tratamientos AS t ON t.idTratamiento = c.idTratamiento "
             "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
-            "WHERE c.Doctor_idDoctor = %s AND h.fecha = %s"
+            "WHERE c.Doctor_idDoctor = %s AND h.fecha = DATE(%s)"
         )
         values = (idDoctor, fecha)
         print(query)
