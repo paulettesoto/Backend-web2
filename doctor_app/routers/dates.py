@@ -127,11 +127,27 @@ def canceldate(idCita:str):
 def dates(idDoctor: str, fecha:str):
     connect, cursor = connection()
     try:
-        query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
-                 "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
-                 "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
-                 "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Doctor_idDoctor=" + idDoctor + " and h.fecha = "+fecha+" ;")
-        cursor.execute(query)
+        query = (
+            "SELECT c.idCita, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Nombre "
+            "    WHEN c.account = 'Y' THEN p.Nombre "  
+            "END AS Nombre, "
+            "d.Nombre AS NombreDoctor, "
+            "t.Tratamiento, "
+            "h.fecha, "
+            "h.hora "
+            "FROM cita AS c "
+            "LEFT JOIN paciente AS p ON p.idPaciente = c.Paciente_idPaciente "
+            "LEFT JOIN pacienteDoctor AS pd ON pd.idPaciente = c.Paciente_idPaciente "
+            "INNER JOIN doctor AS d ON d.idDoctor = c.Doctor_idDoctor "
+            "INNER JOIN tratamientos AS t ON t.idTratamiento = c.idTratamiento "
+            "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
+            "WHERE c.Doctor_idDoctor = %s AND h.fecha = %s"
+        )
+        values = (idDoctor, fecha)
+        print(query)
+        cursor.execute(query, values)
         records = cursor.fetchall()
 
         if records:
