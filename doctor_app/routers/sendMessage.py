@@ -20,8 +20,8 @@ async def send(phoneN: str, text: str):
         whatsapp_link = 'https://api.whatsapp.com/send/?phone=' +whatsapp_phone_number+ '&text=' +text+ '&type=phone_number&app_absent=0'
 
         # Abrir el enlace en el navegador predeterminado
-        webbrowser.open(whatsapp_link)
-        return {"success": "Mensaje enviado"}
+        #webbrowser.open(whatsapp_link)
+        return {"success": whatsapp_link}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
