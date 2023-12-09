@@ -172,7 +172,7 @@ def dates(idDoctor: str, fecha:str):
     finally:
         disconnection(connect, cursor)
 
-@router.put("/confirmAppointment")
+@router.get("/confirmAppointment")
 def confirmApp(idCita:int):
     connect, cursor = connection()
     try:
