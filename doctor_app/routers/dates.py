@@ -136,7 +136,8 @@ def dates(idDoctor: str, fecha:str):
             "d.Nombre AS NombreDoctor, "
             "t.Tratamiento, "
             "h.fecha, "
-            "h.hora "
+            "h.hora, "
+            "c.confirmada "
             "FROM cita AS c "
             "LEFT JOIN paciente AS p ON p.idPaciente = c.Paciente_idPaciente "
             "LEFT JOIN pacienteDoctor AS pd ON pd.idPaciente = c.Paciente_idPaciente "
@@ -153,18 +154,35 @@ def dates(idDoctor: str, fecha:str):
         if records:
             dates_list = []
             for record in records:
-                idcita, nombre, dnombre, tratamiento, fecha, hora = record
+                idcita, nombre, dnombre, tratamiento, fecha, hora, confirm = record
                 date_dict = {
                     "id": idcita,
                     "Nombre": nombre,
                     "Doctor": dnombre,
                     "tratamiento": tratamiento,
                     "fecha": fecha,
-                    "hora": hora
+                    "hora": hora,
+                    "confirmada": confirm
                 }
                 dates_list.append(date_dict)
 
             return {"dates": dates_list}
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
+
+@router.put("/confirmAppointment")
+def confirmApp(idCita:int):
+    connect, cursor = connection()
+    try:
+        query = ("update cita set confirmada=1 where idCita=%s;")
+        val = (idCita,)
+        cursor.execute(query, val)
+        connect.commit()
+        # record = cursor.rowcount()
+        # if record is not None:
+        return {"success": "Cita confirmada con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
