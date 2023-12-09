@@ -41,15 +41,16 @@ id = ""
 def login(user: str, pswrd: str):
     connect, cursor = connection()
     try:
-        cursor.execute("select idDoctor, Nombre, PrimerApe, SegundoApe from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
+        cursor.execute("select idDoctor, Nombre, PrimerApe, SegundoApe, Correo from doctor where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            id_doctor, nombre, primer_ape, segundo_ape = record
+            id_doctor, nombre, primer_ape, segundo_ape, correo = record
             return {
                 "id": id_doctor,
                 "Nombre": nombre,
                 "PrimerApe": primer_ape,
-                "SegundoApe": segundo_ape
+                "SegundoApe": segundo_ape,
+                "email": correo
             }
     except Error as e:
         return {"Error: ", e}
@@ -96,15 +97,17 @@ def signIn_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fech
 def login(user:str, pswrd:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select idPaciente, Nombre, PrimerApe, SegundoApe from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
+        cursor.execute("select idPaciente, Nombre, PrimerApe, SegundoApe, FechaNac, Correo from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            id_paciente, nombre, primer_ape, segundo_ape = record
+            id_paciente, nombre, primer_ape, segundo_ape, fecha, correo= record
             return {
                 "id": id_paciente,
                 "Nombre": nombre,
                 "PrimerApe": primer_ape,
-                "SegundoApe": segundo_ape
+                "SegundoApe": segundo_ape,
+                "FechaNac": fecha,
+                "email": correo
             }
     except Error as e:
         return {"Error: ", e}
