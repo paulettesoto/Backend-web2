@@ -73,7 +73,7 @@ def deleteTreatment(idTratamiento: str):
     try:
 
         query = "delete from tratamientos where idTratamiento=%s;"
-        val = (idTratamiento)
+        val = (idTratamiento,)
         cursor.execute(query, val)
         connect.commit()
         return {"success": "Eliminado con exito"}
