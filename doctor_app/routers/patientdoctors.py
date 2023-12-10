@@ -38,3 +38,33 @@ def buscar_doc(especialidad:str):
         return {"Error: ", e}
     finally:
         disconnection(connect, cursor)
+
+@router.get("/favorites")
+def favorites(idPaciente: str):
+    connect, cursor = connection()
+    try:
+        query = ("select DISTINCT  c.Doctor_idDoctor, d.Nombre, d.PrimerApe, d. SegundoApe, d.Especialidad "
+                 "from cita as c "
+                 "INNER JOIN doctor as d on d.idDoctor=c.Doctor_idDoctor "
+                 "where c.Paciente_idPaciente=" + idPaciente + " and account='Y';")
+        cursor.execute(query)
+        records = cursor.fetchall()
+
+        if records:
+            favorites_list = []
+            for record in records:
+                idDoctor, nombre, apellido1, apellido2, especialidad = record
+                favorites_dict = {
+                    "id": idDoctor,
+                    "Nombre": nombre,
+                    "PrimerApe": apellido1,
+                    "SegundoApe": apellido2,
+                    "especialidad": especialidad
+                }
+                favorites_list.append(favorites_dict)
+
+            return {"favorites": favorites_list}
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
