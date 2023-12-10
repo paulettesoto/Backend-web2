@@ -12,6 +12,7 @@ router = APIRouter(
 paciente = 'paciente1'
 path = os.path.abspath(os.path.join('G:', 'Mi unidad', 'pruebasAgendado', paciente, 'img'))
 
+
 @router.post("/image")
 async def image(image: UploadFile = File(...)):
     print(image.filename)
@@ -26,7 +27,9 @@ async def image(image: UploadFile = File(...)):
 
         # Mover el archivo desde el directorio temporal al destino final
         destination = os.path.join(path, image.filename)
-        shutil.move(temp_file_path, destination)
+
+        # Utilizar shutil.copy en lugar de shutil.move
+        shutil.copy(temp_file_path, destination)
 
         return {"filename": image.filename}
     finally:
