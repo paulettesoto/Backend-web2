@@ -44,7 +44,7 @@ def favorites(idPaciente: str):
     connect, cursor = connection()
     try:
         query = ("select DISTINCT  c.Doctor_idDoctor, d.Nombre, d.PrimerApe, d.SegundoApe, d.Especialidad, d.Cedula, "
-                 "d.Celular, d.Foto from cita as c "
+                 "d.Celular from cita as c "
                  "INNER JOIN doctor as d on d.idDoctor=c.Doctor_idDoctor "
                  "where c.Paciente_idPaciente=" + idPaciente + " and account='Y';")
         cursor.execute(query)
