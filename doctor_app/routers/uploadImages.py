@@ -1,43 +1,39 @@
-#G:\Mi unidad\pruebasAgendado
-import shutil
 import os
-from fastapi import APIRouter, File, UploadFile, Depends
-#from ..dependecies import get_token_header
-
+import shutil
+from fastapi import APIRouter, File, UploadFile
 
 router = APIRouter(
     prefix="/uploadImages",
     tags=["Guardar Imagenes"],
-    #dependencies=[Depends(get_token_header)],
-    responses={404: {"description": "Not found"}})
-
+    responses={404: {"description": "Not found"}}
+)
 
 paciente = 'paciente1'
-path = 'G:/Mi unidad/pruebasAgendado/'+paciente+'/img'
+path = os.path.abspath(os.path.join('G:', 'Mi unidad', 'pruebasAgendado', paciente, 'img'))
 
 
 @router.post("/image")
 async def image(image: UploadFile = File(...)):
     print(image.filename)
-    with open("doctor_app/routers/img/"+image.filename, "wb") as buffer:
+
+    # Asegurar que el directorio de destino exista
+    os.makedirs(path, exist_ok=True)
+
+    # Usar rutas absolutas
+    source = os.path.abspath(os.path.join("doctor_app/routers/img", image.filename))
+    destination = os.path.join(path, image.filename)
+
+    with open(destination, "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
-    uploadimage(path, image.filename)
+
+    uploadimage(source, destination)
     return {"filename": image.filename}
 
 
-def uploadimage(path, file):
-    #try:
-        #os.mkdir(path)
-    source = "doctor_app/routers/img/" + file
-
-        # Destination path
-    destination = path + "/" + file
-
-        # Move the content of
-        # source to destination
-    shutil.move(source, destination)
-    #except OSError as error:
-        #print(error)
-
-
-
+def uploadimage(source, destination):
+    try:
+        shutil.move(source, destination)
+    except FileNotFoundError:
+        print(f"El archivo {source} no se pudo encontrar.")
+    except Exception as e:
+        print(f"Ocurrió un error al mover el archivo: {e}")
