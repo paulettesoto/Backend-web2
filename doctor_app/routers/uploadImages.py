@@ -1,7 +1,7 @@
 import os
 import shutil
-import tempfile
 from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import JSONResponse
 
 router = APIRouter(
     prefix="/uploadImages",
@@ -10,28 +10,22 @@ router = APIRouter(
 )
 
 paciente = 'paciente1'
-path = os.path.abspath(os.path.join('G:', 'Mi unidad', 'pruebasAgendado', paciente, 'img'))
-
+# Define la ruta local en Google Drive
+path = os.path.join('G:', 'Mi unidad', 'pruebasAgendado', paciente, 'img')
 
 @router.post("/image")
 async def image(image: UploadFile = File(...)):
-    print(image.filename)
-
-    # Usar un directorio temporal
-    temp_dir = tempfile.mkdtemp()
-    temp_file_path = os.path.join(temp_dir, image.filename)
-
     try:
-        with open(temp_file_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-
-        # Mover el archivo desde el directorio temporal al destino final
+        # Construye la ruta local del archivo en Google Drive
         destination = os.path.join(path, image.filename)
 
-        # Utilizar shutil.copy en lugar de shutil.move
-        shutil.copy(temp_file_path, destination)
+        # Asegúrate de que el directorio de destino exista
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
 
-        return {"filename": image.filename}
-    finally:
-        # Limpiar el directorio temporal incluso en caso de error
-        shutil.rmtree(temp_dir, ignore_errors=True)
+        # Guarda el archivo en la ruta local
+        with open(destination, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+        return JSONResponse(content={"filename": image.filename}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
