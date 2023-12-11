@@ -105,7 +105,7 @@ def dates(idPaciente: str):
                 date_dict = {
                     "id": idcita,
                     "Nombre": nombre,
-                    "idDoctor": nombre,
+                    "idDoctor": idDoc,
                     "Doctor": idDoc,
                     "tratamiento": tratamiento,
                     "fecha": fecha,
