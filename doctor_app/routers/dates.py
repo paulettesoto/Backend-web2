@@ -19,7 +19,7 @@ def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fec
         val =(Nombre,PrimerApe,SegundoApe,Celular,fecha_nac,Correo,edad,idDoctor)
         cursor.execute(query,val)
         connect.commit()
-        last_inserted_id = cursor.lastrowid
+        last_inserted_id = str(cursor.lastrowid)
         return last_inserted_id
     except Error as e:
         return {"Error: ", e}
@@ -31,19 +31,23 @@ def ListaPacientes(idDoctor:str,celular:str):
     try:
         cursor.execute("select idPaciente from pacienteDoctor where Celular="+celular+" and idDoctor =" + idDoctor + ";")
         records = cursor.fetchone()
-        id = str(records[0])
+
+
         if records:
+            for record in records:
+                id = record
             return id
         else:
-            return 0
+            id=0
+            return id
     except Error as e:
         return {"Error: ", e}
     finally:
         disconnection(connect, cursor)
 @router.post("/setDate")
-def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idTratamiento:str,idDoctor:str,edad:str,fechanac:str, fecha:str, hora:str, idPaciente:str):
+def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idTratamiento:str,idDoctor:str,edad:str,fechanac:str, fecha:str, hora:str):
     if ListaPacientes(idDoctor,celular) == 0:
-        idPaciente = str(agregar_paciente(Nombre,PrimerApe,SegundoApe,celular,fechanac,correo,edad,idDoctor))
+        idPaciente = agregar_paciente(Nombre,PrimerApe,SegundoApe,celular,fechanac,correo,edad,idDoctor)
     else:
         idPaciente = ListaPacientes(idDoctor,celular)
 
@@ -58,11 +62,12 @@ def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idT
             # disconnection()
             # connection()
             try:
-                val = str(record[0])
+                id = str(record[0])
                 query = ("insert into cita(Paciente_idPaciente,Doctor_idDoctor,idTratamiento,idHorario,account) "
-                         "values("+ idPaciente +","+ idDoctor +","+ idTratamiento +","+val+",'N');")
-                print(query)
-                cursor.execute(query)
+                         "values(%s,%s,%s,%s,'N');")
+                val = (idPaciente,idDoctor,idTratamiento,id)
+                print(query, val)
+                cursor.execute(query, val)
                 connect.commit()
                 # if record is not None:
                 try:
