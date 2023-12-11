@@ -6,7 +6,7 @@ from mysql.connector import Error
 from doctor_app.connection import connection, disconnection
 from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patientslist, treatments, uploadImages,
                                 uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors,
-                                patient, patientschedule)
+                                patient, patientschedule,clinicalrecordsPaciente)
 #from localStoragePy import localStoragePy
 
 #localStorage = localStoragePy('agendado', 'text')
@@ -36,6 +36,7 @@ app.include_router(patientschedule.router)
 app.include_router(patientcomments.router)
 app.include_router(patientdoctors.router)
 app.include_router(patient.router)
+app.include_router(clinicalrecordsPaciente.router)
 id = ""
 @app.get("/login")
 def login(user: str, pswrd: str):
