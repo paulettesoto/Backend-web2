@@ -18,7 +18,7 @@ def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
         query = ("INSERT INTO horarios (idDoctor, fecha, hora, status) "
                  "SELECT %s, %s, %s, %s FROM dual "
                  "WHERE NOT EXISTS (SELECT 1 FROM horarios WHERE fecha = %s AND hora = %s);")
-        val =(idDoctor, fecha, hora, status)
+        val =(idDoctor, fecha, hora, status, fecha, hora)
         cursor.execute(query,val)
         connect.commit()
         #record = cursor.rowcount()
@@ -61,7 +61,7 @@ def availableDates(idDoctor:str, fecha:str):
 
 
 @router.delete("/deleteDates")
-def deleteDates(idDoctor:int, idHorario:str):
+def deleteDates(idHorario:str):
     connect, cursor = connection()
     try:
         query = ("delete from horarios where idhorarios=%s;")
