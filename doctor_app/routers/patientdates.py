@@ -91,7 +91,7 @@ def canceldate(idCita:str):
 def dates(idPaciente: str):
     connect, cursor = connection()
     try:
-        query = ("select c.idCita, p.Nombre, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
+        query = ("select c.idCita, p.Nombre, d.idDoctor, d.Nombre, t.Tratamiento, h.fecha,h.hora from cita as c "
                  "INNER JOIN paciente as p on p.idPaciente=c.Paciente_idPaciente INNER JOIN doctor as d "
                  "on d.idDoctor=c.Doctor_idDoctor INNER JOIN tratamientos as t on t.idTratamiento=c.idTratamiento "
                  "INNER JOIN horarios as h on h.idhorarios=c.idHorario where c.Paciente_idPaciente=" + idPaciente + " and account='Y';")
@@ -101,11 +101,12 @@ def dates(idPaciente: str):
         if records:
             dates_list = []
             for record in records:
-                idcita, nombre, dnombre, tratamiento, fecha, hora = record
+                idcita, nombre, idDoc, dnombre, tratamiento, fecha, hora = record
                 date_dict = {
                     "id": idcita,
                     "Nombre": nombre,
-                    "Doctor": dnombre,
+                    "idDoctor": nombre,
+                    "Doctor": idDoc,
                     "tratamiento": tratamiento,
                     "fecha": fecha,
                     "hora": hora

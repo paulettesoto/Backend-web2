@@ -15,7 +15,9 @@ router = APIRouter(
 def addDates(idDoctor:int, fecha:str, hora:str,status:bool):
     connect, cursor = connection()
     try:
-        query = ("insert into horarios(idDoctor,fecha,hora,status) values(%s,%s,%s,%s);")
+        query = ("INSERT INTO horarios (idDoctor, fecha, hora, status) "
+                 "SELECT %s, %s, %s, %s FROM dual "
+                 "WHERE NOT EXISTS (SELECT 1 FROM horarios WHERE fecha = %s AND hora = %s);")
         val =(idDoctor, fecha, hora, status)
         cursor.execute(query,val)
         connect.commit()
@@ -59,29 +61,16 @@ def availableDates(idDoctor:str, fecha:str):
 
 
 @router.delete("/deleteDates")
-def deleteDates(idDoctor:int, fecha:str, hora:str):
+def deleteDates(idDoctor:int, idHorario:str):
     connect, cursor = connection()
     try:
-        query = ("select idhorarios from horarios where idDoctor=%s  and fecha=%s and hora =%s;")
-        val = (idDoctor,fecha,hora)
+        query = ("delete from horarios where idhorarios=%s;")
+        val = (idHorario,)
         cursor.execute(query, val)
-        record = cursor.fetchone()
-        if record is not None:
-            #return {record}
-            # disconnection()
-            # connection()
-            try:
-                query = ("delete from horarios where idhorarios=%s;")
-                val = (record)
-                cursor.execute(query, val)
-                connect.commit()
-                # record = cursor.rowcount()
-                # if record is not None:
-                return {"success": "Eliminado con exito"}
-            except Error as e:
-                return {"Error: ", e}
-            finally:
-                disconnection(connect, cursor)
+        connect.commit()
+        # record = cursor.rowcount()
+        # if record is not None:
+        return {"success": "Eliminado con exito"}
     except Error as e:
         return {"Error: ", e}
     finally:
