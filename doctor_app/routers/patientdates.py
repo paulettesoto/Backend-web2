@@ -106,7 +106,7 @@ def dates(idPaciente: str):
                     "id": idcita,
                     "Nombre": nombre,
                     "idDoctor": idDoc,
-                    "Doctor": idDoc,
+                    "Doctor": dnombre,
                     "tratamiento": tratamiento,
                     "fecha": fecha,
                     "hora": hora
