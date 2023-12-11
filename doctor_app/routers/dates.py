@@ -138,6 +138,10 @@ def dates(idDoctor: str, fecha:str):
             "    WHEN c.account = 'N' THEN pd.Nombre "
             "    WHEN c.account = 'Y' THEN p.Nombre "  
             "END AS Nombre, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Celular "
+            "    WHEN c.account = 'Y' THEN p.Celular "  
+            "END, "
             "d.Nombre AS NombreDoctor, "
             "t.Tratamiento, "
             "h.fecha, "
@@ -159,10 +163,11 @@ def dates(idDoctor: str, fecha:str):
         if records:
             dates_list = []
             for record in records:
-                idcita, nombre, dnombre, tratamiento, fecha, hora, confirm = record
+                idcita, nombre,celular, dnombre, tratamiento, fecha, hora, confirm = record
                 date_dict = {
                     "id": idcita,
                     "Nombre": nombre,
+                    "Celular": celular,
                     "Doctor": dnombre,
                     "tratamiento": tratamiento,
                     "fecha": fecha,
