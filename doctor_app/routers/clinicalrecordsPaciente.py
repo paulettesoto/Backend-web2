@@ -13,11 +13,13 @@ router = APIRouter(
 
 
 @router.get("/clinicalRecords-answers")
-def getAnswers(idDoctor:str, idPaciente:str):
+def getAnswers(idDoctor:str, idPaciente:str, cuenta:int):
     connect, cursor = connection()
     try:
-        query = ("select r.idrespuesta, c.Pregunta, r.doctor_idDoctor, r.paciente_idPaciente, r.respuesta from respuestas as r inner join historiaclinica as c on c.idhistoriaClinica = r.historiaclinica_idhistoriaClinica where doctor_idDoctor=" + idDoctor + " and paciente_idPaciente=" + idPaciente +" ;")
-        cursor.execute(query)
+        query = ("select r.idrespuesta, c.Pregunta, r.doctor_idDoctor, r.paciente_idPaciente, r.respuesta r.cuenta "
+                 "from respuestas as r inner join historiaclinica as c on c.idhistoriaClinica = r.historiaclinica_idhistoriaClinica"
+                 " where doctor_idDoctor=" + idDoctor + " and paciente_idPaciente=" + idPaciente +" and cuenta=%s;")
+        cursor.execute(query, cuenta)
         records = cursor.fetchall()
 
         if records:
@@ -41,11 +43,11 @@ def getAnswers(idDoctor:str, idPaciente:str):
 
 
 @router.post("/addAnswer")
-def addAnswer(idQ:str,idDoctor:str,Ans:str,idPaciente:str):
+def addAnswer(idQ:str,idDoctor:str,Ans:str,idPaciente:str, cuenta:int):
     connect, cursor = connection()
     try:
-        query = ("insert into respuestas(historiaclinica_idhistoriaClinica,doctor_idDoctor,paciente_idPaciente,respuesta) values(%s,%s,%s,%s);")
-        val =(idQ,idDoctor,idPaciente,Ans)
+        query = ("insert into respuestas(historiaclinica_idhistoriaClinica,doctor_idDoctor,paciente_idPaciente,respuesta, cuenta) values(%s,%s,%s,%s, %s);")
+        val =(idQ,idDoctor,idPaciente,Ans, cuenta)
         cursor.execute(query,val)
         connect.commit()
         return {"success": "Registrado con exito"}

@@ -33,7 +33,6 @@ def ListaPacientes(idDoctor:str):
                     "celular": celular,
                     "fechaNac": fechaNac,
                     "correo": correo,
-                    "edad": edad,
                     "idDoctor": iddoctor,
                     "cuenta": cuenta
                 }
@@ -50,13 +49,14 @@ def ListaPacientes(idDoctor:str):
 def ListaPacientescuenta(idDoctor:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select * from paciente where idDoctor =" + idDoctor + ";")
+        cursor.execute("select DISTINCT c.Paciente_idPaciente,p.Nombre, p.PrimerApe, p.SegundoApe,p.Celular,p.FechaNac,p.Correo"
+                       " from cita as c inner join paciente as p where p.idPaciente =c.Paciente_idPaciente and c.Doctor_idDoctor=" + idDoctor + " and c.account = 'Y';")
         records = cursor.fetchall()
 
         if records:
             patients_list = []
             for record in records:
-                idPaciente, nombre, primerApe, segundoApe, celular, fechaNac, correo, edad, iddoctor = record
+                idPaciente, nombre, primerApe, segundoApe, celular, fechaNac, correo = record
                 patient_dict = {
                     "id": idPaciente,
                     "Nombre": nombre,
@@ -65,13 +65,12 @@ def ListaPacientescuenta(idDoctor:str):
                     "celular": celular,
                     "fechaNac": fechaNac,
                     "correo": correo,
-                    "edad": edad,
-                    "idDoctor": iddoctor,
+                    "idDoctor": idDoctor,
                     "cuenta": '1'
                 }
 
                 patients_list.append(patient_dict)
-            return {"patients": patients_list}
+            return {"patientsc": patients_list}
     except Error as e:
         return {"Error: ", e}
     finally:
