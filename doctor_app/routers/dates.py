@@ -202,7 +202,7 @@ def confirmApp(idCita:int):
 from datetime import datetime, timedelta
 
 
-@router.get("/dates")
+@router.get("/reportWeek")
 def dates(idDoctor: str, fecha: str):
     connect, cursor = connection()
     try:
@@ -265,3 +265,73 @@ def dates(idDoctor: str, fecha: str):
     finally:
         disconnection(connect, cursor)
 
+#reportmonth
+
+@router.get("/reportMonth")
+def dates(idDoctor: str):
+    connect, cursor = connection()
+    try:
+        # Obtener la fecha actual
+        fecha_actual = datetime.now()
+
+        # Calcular el primer y último día del mes actual
+        primer_dia_mes = datetime(fecha_actual.year, fecha_actual.month, 1)
+        ultimo_dia_mes = datetime(fecha_actual.year, fecha_actual.month % 12 + 1, 1) - timedelta(days=1)
+
+        query = (
+            "SELECT c.idCita, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Nombre "
+            "    WHEN c.account = 'Y' THEN p.Nombre "
+            "END AS Nombre, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Celular "
+            "    WHEN c.account = 'Y' THEN p.Celular "
+            "END, "
+            "d.Nombre AS NombreDoctor, "
+            "t.Tratamiento, "
+            "h.fecha, "
+            "h.hora, "
+            "CASE "
+            "    WHEN c.confirmada = 0 THEN 'No cumplida' "
+            "    WHEN c.confirmada = 1 THEN 'Cumplida' "
+            "END AS confirmada "
+            "FROM cita AS c "
+            "LEFT JOIN paciente AS p ON p.idPaciente = c.Paciente_idPaciente "
+            "LEFT JOIN pacienteDoctor AS pd ON pd.idPaciente = c.Paciente_idPaciente "
+            "INNER JOIN doctor AS d ON d.idDoctor = c.Doctor_idDoctor "
+            "INNER JOIN tratamientos AS t ON t.idTratamiento = c.idTratamiento "
+            "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
+            "WHERE c.Doctor_idDoctor = %s "
+            "AND h.fecha BETWEEN %s AND %s "
+            "AND h.fecha <= %s "
+            "ORDER BY h.fecha;"
+        )
+
+        values = (idDoctor, primer_dia_mes.strftime("%Y-%m-%d"), ultimo_dia_mes.strftime("%Y-%m-%d"),
+                  fecha_actual.strftime("%Y-%m-%d"))
+        print(query)
+        cursor.execute(query, values)
+        records = cursor.fetchall()
+
+        if records:
+            dates_list = []
+            for record in records:
+                idcita, nombre, celular, dnombre, tratamiento, fecha, hora, confirmada = record
+                date_dict = {
+                    "id": idcita,
+                    "Nombre": nombre,
+                    "Celular": celular,
+                    "Doctor": dnombre,
+                    "tratamiento": tratamiento,
+                    "fecha": fecha,
+                    "hora": hora,
+                    "confirmada": confirmada
+                }
+                dates_list.append(date_dict)
+
+            return {"dates": dates_list}
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
