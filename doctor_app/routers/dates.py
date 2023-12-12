@@ -197,3 +197,71 @@ def confirmApp(idCita:int):
         return {"Error: ", e}
     finally:
         disconnection(connect, cursor)
+
+#reporte semanal
+from datetime import datetime, timedelta
+
+
+@router.get("/dates")
+def dates(idDoctor: str, fecha: str):
+    connect, cursor = connection()
+    try:
+        # Convertir la fecha a un objeto datetime
+        fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
+
+        # Calcular la fecha de inicio y fin de la semana
+        inicio_semana = fecha_obj - timedelta(days=fecha_obj.weekday())
+        fin_semana = inicio_semana + timedelta(days=6)
+
+        query = (
+            "SELECT c.idCita, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Nombre "
+            "    WHEN c.account = 'Y' THEN p.Nombre "
+            "END AS Nombre, "
+            "CASE "
+            "    WHEN c.account = 'N' THEN pd.Celular "
+            "    WHEN c.account = 'Y' THEN p.Celular "
+            "END, "
+            "d.Nombre AS NombreDoctor, "
+            "t.Tratamiento, "
+            "h.fecha, "
+            "h.hora, "
+            "c.confirmada "
+            "FROM cita AS c "
+            "LEFT JOIN paciente AS p ON p.idPaciente = c.Paciente_idPaciente "
+            "LEFT JOIN pacienteDoctor AS pd ON pd.idPaciente = c.Paciente_idPaciente "
+            "INNER JOIN doctor AS d ON d.idDoctor = c.Doctor_idDoctor "
+            "INNER JOIN tratamientos AS t ON t.idTratamiento = c.idTratamiento "
+            "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
+            "WHERE c.Doctor_idDoctor = %s AND h.fecha BETWEEN %s AND %s "
+            "ORDER BY h.fecha;"
+        )
+
+        values = (idDoctor, inicio_semana.strftime("%Y-%m-%d"), fin_semana.strftime("%Y-%m-%d"))
+        print(query)
+        cursor.execute(query, values)
+        records = cursor.fetchall()
+
+        if records:
+            dates_list = []
+            for record in records:
+                idcita, nombre, celular, dnombre, tratamiento, fecha, hora, confirm = record
+                date_dict = {
+                    "id": idcita,
+                    "Nombre": nombre,
+                    "Celular": celular,
+                    "Doctor": dnombre,
+                    "tratamiento": tratamiento,
+                    "fecha": fecha,
+                    "hora": hora,
+                    "confirmada": confirm
+                }
+                dates_list.append(date_dict)
+
+            return {"dates": dates_list}
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
+

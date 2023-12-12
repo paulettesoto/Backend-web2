@@ -16,10 +16,11 @@ router = APIRouter(
 def getAnswers(idDoctor:str, idPaciente:str, cuenta:int):
     connect, cursor = connection()
     try:
-        query = ("select r.idrespuesta, c.Pregunta, r.doctor_idDoctor, r.paciente_idPaciente, r.respuesta r.cuenta "
+        query = ("select r.idrespuesta, c.Pregunta, r.doctor_idDoctor, r.paciente_idPaciente, r.respuesta "
                  "from respuestas as r inner join historiaclinica as c on c.idhistoriaClinica = r.historiaclinica_idhistoriaClinica"
                  " where doctor_idDoctor=" + idDoctor + " and paciente_idPaciente=" + idPaciente +" and cuenta=%s;")
-        cursor.execute(query, cuenta)
+        val=(cuenta,)
+        cursor.execute(query, val)
         records = cursor.fetchall()
 
         if records:
