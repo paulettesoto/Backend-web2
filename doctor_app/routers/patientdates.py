@@ -34,7 +34,16 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
                     val = (record)
                     cursor.execute(query, val)
                     connect.commit()
-                    return {"success": "agendado con exito"}
+                    try:
+                        query = ("INSERT INTO Status (tratamientos_idTratamiento, doctor_idDoctor, paciente_idPaciente, status, cuenta) VALUES (%s,%s,%s, b'0', b'1');")
+                        val = (idTratamiento,idDoctor,idPaciente)
+                        cursor.execute(query, val)
+                        connect.commit()
+                        return {"success": "agendado con exito"}
+                    except Error as e:
+                        return {"Error: ", e}
+                    finally:
+                        disconnection(connect, cursor)
                 except Error as e:
                     return {"Error: ", e}
                 finally:

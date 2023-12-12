@@ -75,7 +75,16 @@ def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idT
                     val = (record)
                     cursor.execute(query, val)
                     connect.commit()
-                    return {"success": "agendado con exito"}
+                    try:
+                        query = ("INSERT INTO Status (tratamientos_idTratamiento, doctor_idDoctor, paciente_idPaciente, status, cuenta) VALUES (%s,%s,%s, b'0', b'0');")
+                        val = (idTratamiento,idDoctor,idPaciente)
+                        cursor.execute(query, val)
+                        connect.commit()
+                        return {"success": "agendado con exito"}
+                    except Error as e:
+                        return {"Error: ", e}
+                    finally:
+                        disconnection(connect, cursor)
                 except Error as e:
                     return {"Error: ", e}
                 finally:
@@ -266,7 +275,6 @@ def dates(idDoctor: str, fecha: str):
         disconnection(connect, cursor)
 
 #reportmonth
-
 @router.get("/reportMonth")
 def dates(idDoctor: str):
     connect, cursor = connection()
@@ -274,20 +282,13 @@ def dates(idDoctor: str):
         # Obtener la fecha actual
         fecha_actual = datetime.now()
 
-        # Calcular el primer y último día del mes actual
+        # Calcular el primer día del mes actual
         primer_dia_mes = datetime(fecha_actual.year, fecha_actual.month, 1)
-        ultimo_dia_mes = datetime(fecha_actual.year, fecha_actual.month % 12 + 1, 1) - timedelta(days=1)
 
         query = (
             "SELECT c.idCita, "
-            "CASE "
-            "    WHEN c.account = 'N' THEN pd.Nombre "
-            "    WHEN c.account = 'Y' THEN p.Nombre "
-            "END AS Nombre, "
-            "CASE "
-            "    WHEN c.account = 'N' THEN pd.Celular "
-            "    WHEN c.account = 'Y' THEN p.Celular "
-            "END, "
+            "COALESCE(pd.Nombre, p.Nombre) AS Nombre, "
+            "COALESCE(pd.Celular, p.Celular) AS Celular, "
             "d.Nombre AS NombreDoctor, "
             "t.Tratamiento, "
             "h.fecha, "
@@ -295,6 +296,7 @@ def dates(idDoctor: str):
             "CASE "
             "    WHEN c.confirmada = 0 THEN 'No cumplida' "
             "    WHEN c.confirmada = 1 THEN 'Cumplida' "
+            "    ELSE 'Pendiente' "
             "END AS confirmada "
             "FROM cita AS c "
             "LEFT JOIN paciente AS p ON p.idPaciente = c.Paciente_idPaciente "
@@ -304,12 +306,10 @@ def dates(idDoctor: str):
             "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
             "WHERE c.Doctor_idDoctor = %s "
             "AND h.fecha BETWEEN %s AND %s "
-            "AND h.fecha <= %s "
             "ORDER BY h.fecha;"
         )
 
-        values = (idDoctor, primer_dia_mes.strftime("%Y-%m-%d"), ultimo_dia_mes.strftime("%Y-%m-%d"),
-                  fecha_actual.strftime("%Y-%m-%d"))
+        values = (idDoctor, primer_dia_mes.strftime("%Y-%m-%d"), fecha_actual.strftime("%Y-%m-%d"))
         print(query)
         cursor.execute(query, values)
         records = cursor.fetchall()
@@ -320,13 +320,13 @@ def dates(idDoctor: str):
                 idcita, nombre, celular, dnombre, tratamiento, fecha, hora, confirmada = record
                 date_dict = {
                     "id": idcita,
-                    "Nombre": nombre,
-                    "Celular": celular,
-                    "Doctor": dnombre,
-                    "tratamiento": tratamiento,
-                    "fecha": fecha,
-                    "hora": hora,
-                    "confirmada": confirmada
+                    "Nombre": nombre or '',  # Asegúrate de manejar NULL correctamente
+                    "Celular": celular or '',  # Asegúrate de manejar NULL correctamente
+                    "Doctor": dnombre or '',  # Asegúrate de manejar NULL correctamente
+                    "tratamiento": tratamiento or '',  # Asegúrate de manejar NULL correctamente
+                    "fecha": fecha.strftime("%Y-%m-%d") if fecha else '',  # Asegúrate de manejar NULL correctamente
+                    "hora": hora or '',  # Asegúrate de manejar NULL correctamente
+                    "confirmada": confirmada or ''  # Asegúrate de manejar NULL correctamente
                 }
                 dates_list.append(date_dict)
 
