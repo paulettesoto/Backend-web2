@@ -46,6 +46,37 @@ def ListaPacientes(idDoctor:str):
         disconnection(connect, cursor)
 
 
+@router.get("/listapacientescuenta")
+def ListaPacientescuenta(idDoctor:str):
+    connect, cursor = connection()
+    try:
+        cursor.execute("select * from paciente where idDoctor =" + idDoctor + ";")
+        records = cursor.fetchall()
+
+        if records:
+            patients_list = []
+            for record in records:
+                idPaciente, nombre, primerApe, segundoApe, celular, fechaNac, correo, edad, iddoctor = record
+                patient_dict = {
+                    "id": idPaciente,
+                    "Nombre": nombre,
+                    "PrimerApe": primerApe,
+                    "SegundoApe": segundoApe,
+                    "celular": celular,
+                    "fechaNac": fechaNac,
+                    "correo": correo,
+                    "edad": edad,
+                    "idDoctor": iddoctor,
+                    "cuenta": '1'
+                }
+
+                patients_list.append(patient_dict)
+            return {"patients": patients_list}
+    except Error as e:
+        return {"Error: ", e}
+    finally:
+        disconnection(connect, cursor)
+
 @router.post("/agregar_paciente") #NO ES NECESARIA LA CONTRASEÑA CUANDO EL DOCTOR AGREGA UN PACIENTE
 def agregar_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fecha_nac:str, Correo:str, edad:str,idDoctor:str):
     connect, cursor = connection()
