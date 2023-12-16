@@ -44,11 +44,11 @@ def getAnswers(idDoctor:str, idPaciente:str, cuenta:int):
 
 
 @router.post("/addAnswer")
-def addAnswer(idQ:str,idDoctor:str,Ans:str,idPaciente:str, cuenta:int):
+def addAnswer(idQ:str,idDoctor:str,Ans:str,idPaciente:str, cuenta:str):
     connect, cursor = connection()
     try:
-        query = ("insert into respuestas(historiaclinica_idhistoriaClinica,doctor_idDoctor,paciente_idPaciente,respuesta, cuenta) values(%s,%s,%s,%s, %s);")
-        val =(idQ,idDoctor,idPaciente,Ans, cuenta)
+        query = ("insert into respuestas(historiaclinica_idhistoriaClinica,doctor_idDoctor,paciente_idPaciente,respuesta,cuenta) values(%s,%s,%s,%s, b%s);")
+        val =(idQ,idDoctor,idPaciente,Ans,cuenta)
         cursor.execute(query,val)
         connect.commit()
         return {"success": "Registrado con exito"}

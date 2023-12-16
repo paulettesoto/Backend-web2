@@ -6,10 +6,10 @@ from mysql.connector import Error
 
 
 def connection(): #FUNCION PARA HACER CONEXION A BASE DE DATOS
+    #connect = mysql.connector.connect(host="localhost", port="3306",
+     #                                 user="root", passwd="root", db="doctorapp")
     connect = mysql.connector.connect(host="bwqhentfjwvfmwcaipyr-mysql.services.clever-cloud.com", port="3306",
-                                      user="uksz5kt6b52dvewr", passwd="IQ2BkXCexmhdQlgHa7yX", db="bwqhentfjwvfmwcaipyr")
-    #connect = mysql.connector.connect(host="bwqhentfjwvfmwcaipyr-mysql.services.clever-cloud.com", port="3306",
-     #                               user = "uksz5kt6b52dvewr", passwd = "IQ2BkXCexmhdQlgHa7yX", db = "bwqhentfjwvfmwcaipyr")
+                                      user = "uksz5kt6b52dvewr", passwd = "IQ2BkXCexmhdQlgHa7yX", db = "bwqhentfjwvfmwcaipyr")
     cursor = connect.cursor(dictionary=False)
     try:
         if connect.is_connected():
