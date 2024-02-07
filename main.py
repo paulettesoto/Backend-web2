@@ -98,7 +98,7 @@ def signIn_paciente(Nombre:str, PrimerApe:str, SegundoApe:str, Celular:str, fech
 def login(user:str, pswrd:str):
     connect, cursor = connection()
     try:
-        cursor.execute("select idPaciente, Nombre, PrimerApe, SegundoApe, FechaNac, Correo from paciente where Celular="+ user + " and Contrasena=" + pswrd + ";")
+        cursor.execute("select idPaciente, Nombre, PrimerApe, SegundoApe, FechaNac, Correo from paciente where Celular='"+ user + "' or Correo='"+user+"' and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
             id_paciente, nombre, primer_ape, segundo_ape, fecha, correo= record
