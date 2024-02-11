@@ -29,23 +29,12 @@ async def image(Nombre: str = Form(...), primerape: str = Form(...), segundoape:
         raise HTTPException(status_code=422, detail=str(e))
 
 
-
-import os
-
-
 @router.post("/upload/")
-async def upload_file(file: UploadFile = File(...)):
+async def uploadfile(file: UploadFile):
     try:
-        # Define la ubicación donde guardar el archivo
-
-        save_location = "C:/prueba/"
-        file_location = os.path.join(save_location, file.filename)
-
-        # Guarda el archivo en el disco
-        with open(file_location, "wb") as buffer:
-            buffer.write(file.file.read())
-
-        return JSONResponse(status_code=200,
-                            content={"message": "Archivo subido exitosamente", "filename": file.filename})
+        file_path = f"C:\\prueba/{file.filename}"
+        with open(file_path, "wb") as f:
+            f.write(file.file.read())
+        return {"message": "File saved successfully"}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"message": f"Error al subir archivo: {str(e)}"})
+        return {"message": e.args}
