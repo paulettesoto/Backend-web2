@@ -37,7 +37,7 @@ import os
 async def upload_file(file: UploadFile = File(...)):
     try:
         # Define la ubicación donde guardar el archivo
-        save_location = "C:/prueba/"
+        save_location = os.path.join('C:', 'Prueba')
         file_location = os.path.join(save_location, file.filename)
 
         # Guarda el archivo en el disco
