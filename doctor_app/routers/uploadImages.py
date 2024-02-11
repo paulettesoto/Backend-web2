@@ -1,7 +1,8 @@
 import os
 import shutil
 from fastapi import APIRouter, FastAPI, File, UploadFile, Form, HTTPException
-from fastapi.responses import JSONResponse
+
+import uuid
 
 router = APIRouter(
     prefix="/uploadImages",
@@ -28,13 +29,14 @@ async def image(Nombre: str = Form(...), primerape: str = Form(...), segundoape:
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-
+IMAGEDIR = "G:/Mi unidad/DoctorApp/"
 @router.post("/upload/")
-async def uploadfile(file: UploadFile):
-    try:
-        file_path = f"C:\\prueba/{file.filename}"
-        with open(file_path, "wb") as f:
-            f.write(file.file.read())
-        return {"message": "File saved successfully"}
-    except Exception as e:
-        return {"message": e.args}
+async def create_upload_file(file: UploadFile = File(...)):
+    file.filename = f"{uuid.uuid4()}.jpg"
+    contents = await file.read()
+
+    # save the file
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+
+    return {"filename": file.filename}
