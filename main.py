@@ -42,16 +42,17 @@ id = ""
 def login(user: str, pswrd: str):
     connect, cursor = connection()
     try:
-        cursor.execute("select idDoctor, Nombre, PrimerApe, SegundoApe, Correo from doctor where Celular='"+ user + "' or Correo='"+user+"' and Contrasena=" + pswrd + ";")
+        cursor.execute("select idDoctor, Nombre, PrimerApe, SegundoApe, Correo, Celular from doctor where Celular='"+ user + "' or Correo='"+user+"' and Contrasena=" + pswrd + ";")
         record = cursor.fetchone()
         if record is not None:
-            id_doctor, nombre, primer_ape, segundo_ape, correo = record
+            id_doctor, nombre, primer_ape, segundo_ape, correo, celular = record
             return {
                 "id": id_doctor,
                 "Nombre": nombre,
                 "PrimerApe": primer_ape,
                 "SegundoApe": segundo_ape,
-                "email": correo
+                "email": correo,
+                "celular": celular
             }
     except Error as e:
         return {"Error: ", e}
