@@ -33,6 +33,7 @@ def ListaPacientes(idDoctor:str):
                     "celular": celular,
                     "fechaNac": fechaNac,
                     "correo": correo,
+                    "edad": edad,
                     "idDoctor": iddoctor,
                     "cuenta": cuenta
                 }
