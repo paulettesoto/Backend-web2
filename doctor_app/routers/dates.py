@@ -76,7 +76,8 @@ def setDate(celular:str, correo:str, Nombre:str,PrimerApe:str,SegundoApe:str,idT
                     cursor.execute(query, val)
                     connect.commit()
                     try:
-                        query = ("INSERT INTO Status (tratamientos_idTratamiento, doctor_idDoctor, paciente_idPaciente, status, cuenta) VALUES (%s,%s,%s, b'0', b'0');")
+                        query = ("INSERT INTO Status (tratamientos_idTratamiento, doctor_idDoctor, paciente_idPaciente, "
+                                 "status, cuenta) VALUES (%s,%s,%s, b'0', b'0');")
                         val = (idTratamiento,idDoctor,idPaciente)
                         cursor.execute(query, val)
                         connect.commit()
