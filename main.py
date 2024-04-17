@@ -1,15 +1,11 @@
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-#from .dependecies import get_token_header
 from mysql.connector import Error
 from doctor_app.connection import connection, disconnection
 from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patientslist, treatments, uploadImages,
                                 uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors,
                                 patient, patientschedule,clinicalrecordsPaciente)
-#from localStoragePy import localStoragePy
-
-#localStorage = localStoragePy('agendado', 'text')
 app = FastAPI()
 
 app.add_middleware(
