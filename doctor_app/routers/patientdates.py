@@ -41,19 +41,19 @@ def setDate(idPaciente:str, idDoctor:str, idTratamiento:str, fecha:str, hora:str
                         connect.commit()
                         return {"success": "agendado con exito"}
                     except Error as e:
-                        return {"Error: ", e}
+                        return {"Error: Estatus", e}
                     finally:
                         disconnection(connect, cursor)
                 except Error as e:
-                    return {"Error: ", e}
+                    return {"Error: Update", e}
                 finally:
                     disconnection(connect, cursor)
             except Error as e:
-                return {"Error: ", e}
+                return {"Error: Cita", e}
             finally:
                 disconnection(connect, cursor)
     except Error as e:
-        return {"Error: ", e}
+        return {"Error: Select", e}
     finally:
         disconnection(connect, cursor)
 
