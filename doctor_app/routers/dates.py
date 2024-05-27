@@ -201,7 +201,7 @@ def dates(idDoctor: str, fecha:str):
         return {"Error: ", e}
     finally:
         disconnection(connect, cursor)
-#nomas
+
 @router.get("/confirmAppointment")
 def confirmApp(idCita:int):
     connect, cursor = connection()

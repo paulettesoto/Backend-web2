@@ -5,7 +5,7 @@ from mysql.connector import Error
 from doctor_app.connection import connection, disconnection
 from doctor_app.routers import (dates, comments, doctors, clinicalrecords, patientslist, treatments, uploadImages,
                                 uploadDocs, sendMessage, pdf, schedules, patientdates, patientcomments, patientdoctors,
-                                patient, patientschedule,clinicalrecordsPaciente)
+                                patient, patientschedule,clinicalrecordsPaciente, stats)
 app = FastAPI()
 
 app.add_middleware(
@@ -33,6 +33,7 @@ app.include_router(patientcomments.router)
 app.include_router(patientdoctors.router)
 app.include_router(patient.router)
 app.include_router(clinicalrecordsPaciente.router)
+app.include_router(stats.router)
 id = ""
 @app.get("/login")
 def login(user: str, pswrd: str):
