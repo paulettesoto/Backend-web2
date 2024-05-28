@@ -221,3 +221,35 @@ def dates(idDoctor: str):
         return {"Error": str(e)}
     finally:
         disconnection(connect, cursor)
+
+def format_timedelta_to_hhmm(timedelta_obj):
+    total_seconds = int(timedelta_obj.total_seconds())
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    return f"{hours:02}:{minutes:02}"
+@router.get("/used_hours")
+def get_used_hours(idDoctor: str):
+    connect, cursor = connection()
+    try:
+        query = (
+            "SELECT hora, COUNT(*) AS ocupadas "
+            "FROM horarios "
+            "WHERE idDoctor = %s AND status = 0 "
+            "GROUP BY hora;"
+        )
+        values = (idDoctor,)
+        cursor.execute(query, values)
+        records = cursor.fetchall()
+
+        hours_dict = {}
+        if records:
+            for record in records:
+                hora, ocupadas = record
+                formatted_hour = format_timedelta_to_hhmm(hora)
+                hours_dict[formatted_hour] = ocupadas
+
+        return {"used_hours": hours_dict}
+    except Error as e:
+        return {"Error": str(e)}
+    finally:
+        disconnection(connect, cursor)
