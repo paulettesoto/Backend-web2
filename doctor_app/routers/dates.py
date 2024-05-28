@@ -119,7 +119,10 @@ def canceldate(idCita:str):
                 connect.commit()
                 # if record is not None:
                 try:
-                    query = ("update horarios set status=true where idhorarios=%s;")
+                    query = (
+                        "UPDATE horarios SET status = TRUE, updated_at = NOW() "
+                        "WHERE idhorarios = %s;"
+                    )
                     val = (record)
                     cursor.execute(query, val)
                     connect.commit()

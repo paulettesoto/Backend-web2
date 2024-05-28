@@ -253,3 +253,50 @@ def get_used_hours(idDoctor: str):
         return {"Error": str(e)}
     finally:
         disconnection(connect, cursor)
+
+
+@router.get("/canceladas-atendidas")
+def canceladasatendidas(idDoctor: str, year: str, month: str):
+    connect, cursor = connection()
+    try:
+        _, last_day = calendar.monthrange(int(year), int(month))
+        all_days = [datetime(int(year), int(month), day).strftime("%Y-%m-%d") for day in range(1, last_day + 1)]
+
+        query_confirmed = (
+            "SELECT h.fecha, COUNT(*) AS cantidad "
+            "FROM cita AS c "
+            "INNER JOIN horarios AS h ON h.idhorarios = c.idHorario "
+            "WHERE c.Doctor_idDoctor = %s AND YEAR(h.fecha) = %s AND MONTH(h.fecha) = %s AND c.confirmada = '1' "
+            "GROUP BY h.fecha;"
+        )
+        values = (idDoctor, year, month)
+        cursor.execute(query_confirmed, values)
+        confirmed_records = cursor.fetchall()
+        print(confirmed_records)
+
+        query_cancelled = (
+            "SELECT fecha, COUNT(*) AS cantidad "
+            "FROM horarios "
+            "WHERE idDoctor = %s AND YEAR(fecha) = %s AND MONTH(fecha) = %s AND updated_at IS NOT NULL "
+            "GROUP BY fecha;"
+        )
+        cursor.execute(query_cancelled, values)
+        cancelled_records = cursor.fetchall()
+        print(cancelled_records)
+
+        confirmed_dates = {record[0].strftime("%Y-%m-%d"): record[1] for record in confirmed_records}
+        cancelled_dates = {record[0].strftime("%Y-%m-%d"): record[1] for record in cancelled_records}
+
+        dates_list = []
+        for day in all_days:
+            dates_list.append({
+                "fecha": day,
+                "confirmadas": confirmed_dates.get(day, 0),
+                "canceladas": cancelled_dates.get(day, 0)
+            })
+
+        return {"dates": dates_list}
+    except Error as e:
+        return {"Error": str(e)}
+    finally:
+        disconnection(connect, cursor)
