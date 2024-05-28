@@ -69,7 +69,7 @@ def availableDates(idDoctor:str):
         if records:
             dates_list = {}
             for record in records:
-                idHorario, idDoctor, fecha, hora, status = record
+                idHorario, idDoctor, fecha, hora, status, updated_at = record
                 date_entry = {
                     "id": idHorario,
                     "idDoctor": idDoctor,
